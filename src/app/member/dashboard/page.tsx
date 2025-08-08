@@ -1,10 +1,13 @@
+"use client";
+
+import withMemberGuard from "@/components/auth/withMemberGuard";
 import { ClaimsHistory } from "@/components/dashboard/claims-history";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 
-export default function DashboardPage() {
+function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -28,3 +31,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+export default withMemberGuard(DashboardPage);

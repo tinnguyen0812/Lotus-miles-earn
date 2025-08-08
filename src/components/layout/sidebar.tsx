@@ -21,36 +21,20 @@ import { LotusIcon } from "@/components/icons";
 import { Button } from "../ui/button";
 import { useTranslation } from "@/lib/i18n";
 import React from "react";
-
-// A mock hook to simulate getting user role
-const useUserRole = () => {
-    // In a real app, this would get the user role from your auth context
-    const [role, setRole] = React.useState('member');
-    
-    React.useEffect(() => {
-        // Let's pretend we can be an admin by checking for a magic email in local storage or something
-        // For this demo, we can just check if the email input on login page was set to admin
-        const loginEmailInput = document.getElementById("email") as HTMLInputElement;
-        if(loginEmailInput && loginEmailInput.value.includes('admin')){
-            setRole('admin');
-        }
-    }, []);
-
-    return role;
-}
+import { useAuth } from "@/hooks/useAuth";
 
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const role = useUserRole();
+  const { role } = useAuth();
 
   const menuItems = [
     {
-      href: "/dashboard",
+      href: "/member/dashboard",
       label: t('sidebar.dashboard'),
       icon: Gauge,
-      roles: ['member', 'admin']
+      roles: ['member']
     },
     {
       href: "/member/claim-miles",
@@ -66,12 +50,14 @@ export function AppSidebar() {
     },
   ];
 
+  const filteredMenuItems = menuItems.filter(item => role && item.roles.includes(role));
+
   return (
     <>
       <SidebarHeader>
         <div className="flex items-center gap-2">
             <Button variant="ghost" className="size-9 p-0" asChild>
-                <Link href="/dashboard">
+                <Link href={role === 'admin' ? '/admin/claims' : '/member/dashboard'}>
                     <LotusIcon className="size-8 text-primary" />
                 </Link>
             </Button>
@@ -83,7 +69,7 @@ export function AppSidebar() {
 
       <SidebarContent className="p-2">
         <SidebarMenu>
-          {menuItems.filter(item => item.roles.includes(role)).map((item) => (
+          {filteredMenuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild

@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/layout/sidebar";
 import { AppHeader } from "@/components/layout/header";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
 
   return (

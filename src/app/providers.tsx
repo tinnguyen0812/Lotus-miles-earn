@@ -1,8 +1,21 @@
 "use client";
 
 import { LanguageProvider } from "@/lib/i18n.tsx";
+import { useAuth } from "@/hooks/useAuth";
+
+function AuthProvider({ children }: { children: React.ReactNode }) {
+    // This call initializes the auth state listener
+    useAuth(); 
+    return <>{children}</>;
+}
+
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  // In a real app, you would also wrap this with your auth provider
-  return <LanguageProvider>{children}</LanguageProvider>;
+  return (
+    <LanguageProvider>
+        <AuthProvider>
+            {children}
+        </AuthProvider>
+    </LanguageProvider>
+  );
 }

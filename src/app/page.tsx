@@ -2,16 +2,23 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
   const router = useRouter();
+  const { role, loading } = useAuth();
 
   useEffect(() => {
-    // This simulates checking auth state and redirecting.
-    // In a real app, you'd check for a valid session.
-    router.replace("/dashboard");
-  }, [router]);
+    if (!loading) {
+      if (role === 'admin') {
+        router.replace("/admin/claims");
+      } else if (role === 'member') {
+        router.replace("/member/dashboard");
+      } else {
+        router.replace("/login");
+      }
+    }
+  }, [router, role, loading]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center">

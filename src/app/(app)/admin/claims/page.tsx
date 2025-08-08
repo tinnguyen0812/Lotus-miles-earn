@@ -1,3 +1,6 @@
+"use client";
+
+import withAdminGuard from "@/components/auth/withAdminGuard";
 import { ClaimsTable } from "@/components/admin/claims-table";
 import {
   Card,
@@ -7,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function AdminClaimsPage() {
+function AdminClaimsPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -31,3 +34,5 @@ export default function AdminClaimsPage() {
     </div>
   );
 }
+
+export default withAdminGuard(AdminClaimsPage);

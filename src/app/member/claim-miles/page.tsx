@@ -1,3 +1,5 @@
+"use client";
+import withMemberGuard from "@/components/auth/withMemberGuard";
 import { ClaimForm } from "@/components/claims/claim-form";
 import {
   Card,
@@ -8,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { FileQuestion } from "lucide-react";
 
-export default function ClaimMilesPage() {
+function ClaimMilesPage() {
   return (
     <div className="space-y-6">
        <div>
@@ -42,3 +44,5 @@ export default function ClaimMilesPage() {
     </div>
   );
 }
+
+export default withMemberGuard(ClaimMilesPage);
