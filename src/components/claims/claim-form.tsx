@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -27,8 +26,8 @@ import { CalendarIcon, Loader2, Send } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { submitClaim } from "@/actions/claims";
 import { useRouter } from "next/navigation";
+import { callApi } from "@/lib/api-client";
 
 const claimFormSchema = z.object({
   flightNumber: z.string().min(4, "Please enter a valid flight number."),
@@ -50,25 +49,18 @@ export function ClaimForm() {
 
   async function onSubmit(data: ClaimFormValues) {
     setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append("flightNumber", data.flightNumber);
-    formData.append("flightDate", data.flightDate.toISOString());
-    // In a real app, you would handle file upload properly here.
-    // For this refactor, we are focusing on the form submission action.
     
-    const result = await submitClaim(null, formData);
+    try {
+        const result = await callApi<{ message: string }>({
+            method: 'POST',
+            path: '/api/claims',
+            body: {
+                flightNumber: data.flightNumber,
+                flightDate: data.flightDate.toISOString(),
+                // In a real app, attachment would be handled, e.g., uploaded to storage first
+            },
+        });
 
-    if (result.errors) {
-       Object.values(result.errors).forEach((error) => {
-         if (Array.isArray(error)) {
-            toast({
-              title: "Submission Error",
-              description: error.join(', '),
-              variant: "destructive",
-            });
-         }
-      });
-    } else {
         toast({
             title: "Claim Submitted!",
             description: result.message,
@@ -77,11 +69,17 @@ export function ClaimForm() {
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
-        // Redirect or refresh data
         router.refresh();
+
+    } catch (error: any) {
+        toast({
+            title: "Submission Error",
+            description: error.message || "An unexpected error occurred.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   }
 
   return (
@@ -98,7 +96,7 @@ export function ClaimForm() {
                 <FormField
                 control={form.control}
                 name="attachment"
-                render={({ field }) => ( // The field is not directly used but required by hook-form
+                render={({ field }) => ( 
                     <FormItem>
                     <FormLabel>E-Ticket / Boarding Pass (Optional)</FormLabel>
                     <FormControl>

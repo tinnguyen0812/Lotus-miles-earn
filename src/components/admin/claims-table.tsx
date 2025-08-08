@@ -12,8 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, XCircle } from "lucide-react";
-import { reviewClaim } from "@/actions/claims";
 import { useToast } from "@/hooks/use-toast";
+import { callApi } from "@/lib/api-client";
 
 const mockClaims = [
   {
@@ -61,14 +61,25 @@ export function ClaimsTable() {
     userId: string,
     miles: number
   ) => {
-    // In a real app, the server action would update the database,
-    // and we would refetch the data. Here, we just filter the UI.
-    const result = await reviewClaim(claimId, status, userId, miles);
-    toast({
-      title: "Action Complete",
-      description: result.message,
-    });
-    setClaims((prevClaims) => prevClaims.filter((c) => c.id !== claimId));
+    try {
+        const result = await callApi<{ message: string }>({
+            method: 'POST',
+            path: '/api/claims/review',
+            body: { claimId, status, userId, miles },
+        });
+
+        toast({
+            title: "Action Complete",
+            description: result.message,
+        });
+        setClaims((prevClaims) => prevClaims.filter((c) => c.id !== claimId));
+    } catch (error: any) {
+        toast({
+            title: "Error",
+            description: error.message || "Failed to review the claim.",
+            variant: "destructive",
+        });
+    }
   };
 
   return (
