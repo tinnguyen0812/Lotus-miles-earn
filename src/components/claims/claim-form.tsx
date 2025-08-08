@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -25,7 +26,6 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon, Loader2, Send } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { extractFlightInfo } from "@/ai/flows/extract-flight-info";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const claimFormSchema = z.object({
@@ -39,63 +39,11 @@ type ClaimFormValues = z.infer<typeof claimFormSchema>;
 export function ClaimForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isExtracting, setIsExtracting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<ClaimFormValues>({
     resolver: zodResolver(claimFormSchema),
   });
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsExtracting(true);
-    toast({
-      title: "Analyzing Attachment",
-      description: "Our AI is extracting flight details. Please wait...",
-    });
-
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const attachmentDataUri = reader.result as string;
-        const result = await extractFlightInfo({
-          attachmentDataUri,
-          attachmentName: file.name,
-        });
-
-        if (result.flightNumber) {
-          form.setValue("flightNumber", result.flightNumber, {
-            shouldValidate: true,
-          });
-        }
-        if (result.flightDate) {
-          const date = new Date(result.flightDate + "T00:00:00");
-          form.setValue("flightDate", date, { shouldValidate: true });
-        }
-        toast({
-          title: "Information Extracted",
-          description: "Flight details have been pre-filled.",
-        });
-      };
-      reader.onerror = () => {
-        throw new Error("Error reading file.");
-      };
-    } catch (error) {
-      console.error("Extraction failed", error);
-      toast({
-        variant: "destructive",
-        title: "Extraction Failed",
-        description: "Could not extract info. Please enter details manually.",
-      });
-    } finally {
-      setIsExtracting(false);
-    }
-  };
 
   async function onSubmit(data: ClaimFormValues) {
     setIsSubmitting(true);
@@ -119,7 +67,7 @@ export function ClaimForm() {
       <CardHeader>
         <CardTitle>Claim Details</CardTitle>
         <FormDescription>
-            You can fill the form manually or upload an attachment to let AI do the work.
+            You can fill the form manually and optionally upload an attachment.
         </FormDescription>
       </CardHeader>
       <CardContent>
@@ -130,21 +78,18 @@ export function ClaimForm() {
               name="attachment"
               render={() => (
                 <FormItem>
-                  <FormLabel>E-Ticket / Boarding Pass</FormLabel>
+                  <FormLabel>E-Ticket / Boarding Pass (Optional)</FormLabel>
                   <FormControl>
                     <Input
                       type="file"
                       ref={fileInputRef}
-                      onChange={handleFileChange}
-                      disabled={isExtracting || isSubmitting}
+                      disabled={isSubmitting}
                       accept="image/*,.pdf"
                       className="file:text-primary file:font-semibold"
                     />
                   </FormControl>
                   <FormDescription>
-                    {isExtracting
-                      ? "AI is reading your document..."
-                      : "Upload an image or PDF of your flight document."}
+                    Upload an image or PDF of your flight document for verification.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -212,7 +157,7 @@ export function ClaimForm() {
                 )}
               />
             </div>
-            <Button type="submit" disabled={isSubmitting || isExtracting} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
               {isSubmitting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
