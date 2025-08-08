@@ -1,10 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword, getIdTokenResult } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { LotusIcon } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-
+import { api } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,19 +35,31 @@ export default function LoginPage() {
     const password = formData.get("password") as string;
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const idTokenResult = await getIdTokenResult(userCredential.user);
-      
-      if (idTokenResult.claims.role === 'admin') {
-        router.push("/admin/claims");
-      } else {
+      const response = await api.post('/api/auth/login', { email, password });
+      const { token, role } = response.data;
+
+      if (role === 'member') {
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', role);
         router.push("/member/dashboard");
+      } else if (role === 'admin') {
+        setError("Admin accounts cannot log in here. Please use the admin login page.");
+        toast({
+            title: "Access Denied",
+            description: "Please use the admin login page.",
+            variant: "destructive",
+        });
+      } else {
+        throw new Error("Invalid role received from server.");
       }
     } catch (error: any) {
-        setError("Invalid email or password. Please try again.");
+        const desc = error.response?.status === 403 
+            ? "Invalid email or password."
+            : "An unexpected error occurred.";
+        setError(desc);
         toast({
             title: "Login Failed",
-            description: "Invalid email or password. Please try again.",
+            description: desc,
             variant: "destructive",
         });
         console.error("Login Error:", error);

@@ -1,6 +1,7 @@
+
 "use client";
 
-import { LanguageProvider } from "@/lib/i18n.tsx";
+import { LanguageProvider } from "@/lib/i18n";
 import { useAuth } from "@/hooks/useAuth";
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -13,9 +14,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <LanguageProvider>
-        <AuthProvider>
-            {children}
-        </AuthProvider>
+        {children}
     </LanguageProvider>
   );
 }

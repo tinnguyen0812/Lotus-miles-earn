@@ -1,10 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithEmailAndPassword, getIdTokenResult } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { LotusIcon } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 
 export default function AdminLoginPage() {
@@ -36,10 +36,12 @@ export default function AdminLoginPage() {
         const password = formData.get("password") as string;
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const idTokenResult = await getIdTokenResult(userCredential.user);
+            const response = await api.post('/api/auth/login', { email, password });
+            const { token, role } = response.data;
 
-            if (idTokenResult.claims.role === 'admin') {
+            if (role === 'admin') {
+                localStorage.setItem('token', token);
+                localStorage.setItem('role', role);
                 router.push('/admin/claims');
             } else {
                 setError("This account does not have admin privileges.");
@@ -48,13 +50,15 @@ export default function AdminLoginPage() {
                     description: "This account does not have admin privileges.",
                     variant: "destructive",
                 });
-                await auth.signOut();
             }
-        } catch (error) {
-            setError("Invalid email or password. Please try again.");
+        } catch (error: any) {
+             const desc = error.response?.status === 403 
+                ? "Invalid email or password."
+                : "An unexpected error occurred.";
+            setError(desc);
             toast({
                 title: "Login Failed",
-                description: "Invalid email or password. Please try again.",
+                description: desc,
                 variant: "destructive",
             });
             console.error("Admin Login Error:", error);
@@ -107,7 +111,7 @@ export default function AdminLoginPage() {
                         </Link>
                     </div>
                     </form>
-                </CardContent>
+                </Content>
             </Card>
         </main>
     );

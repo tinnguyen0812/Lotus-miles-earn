@@ -1,37 +1,49 @@
-"use client"
 
-import { useEffect, useState } from 'react'
-import { onAuthStateChanged, getIdTokenResult, User } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+'use client'
+import { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 
 type Role = 'admin' | 'member';
 
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [role, setRole] = useState<Role | null>(null)
-  const [loading, setLoading] = useState(true)
+export function useAuth(expectedRole?: Role) {
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState<Role | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      if (user) {
-        try {
-            const idTokenResult = await getIdTokenResult(user, true); // Force refresh
-            const userRole = (idTokenResult.claims.role as Role) || 'member';
-            setRole(userRole);
-        } catch(error) {
-            console.error("Error getting user token result:", error);
-            // Handle error, maybe sign out user
-            setRole('member'); // Fallback role
+    try {
+      const token = localStorage.getItem('token');
+      const storedRole = localStorage.getItem('role') as Role | null;
+      
+      if (token && storedRole) {
+        setIsAuthenticated(true);
+        setRole(storedRole);
+
+        if (expectedRole && storedRole !== expectedRole) {
+            const targetPath = storedRole === 'admin' ? '/admin/claims' : '/member/dashboard';
+            router.replace(targetPath);
         }
+
       } else {
-        setRole(null)
+         setIsAuthenticated(false);
+         setRole(null);
+         // Redirect if on a protected route
+         if (pathname.startsWith('/member') || pathname.startsWith('/admin')) {
+            const loginPath = pathname.startsWith('/admin') ? '/admin/login' : '/login';
+            router.replace(loginPath);
+         }
       }
-      setLoading(false);
-    });
+    } catch (e) {
+        // localStorage can throw errors in some environments
+        console.error("Auth check failed", e);
+        setIsAuthenticated(false);
+        setRole(null);
+    } finally {
+        setLoading(false);
+    }
+  }, [pathname, router, expectedRole]);
 
-    return () => unsubscribe();
-  }, []);
-
-  return { user, role, loading };
+  return { loading, isAuthenticated, role };
 }

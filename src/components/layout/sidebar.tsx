@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -27,7 +28,7 @@ import { useAuth } from "@/hooks/useAuth";
 export function AppSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const { role } = useAuth(pathname.startsWith('/admin') ? 'admin' : 'member');
 
   const menuItems = [
     {

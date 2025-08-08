@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,23 +17,39 @@ import { LogOut, User, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { auth } from "@/lib/firebase";
+import { useEffect, useState } from "react";
 
 export function UserNav() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { user, role } = useAuth();
+  const { isAuthenticated, role: authRole } = useAuth();
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
-  const handleLogout = async () => {
-    await auth.signOut();
-    router.push("/login");
+   useEffect(() => {
+    if (isAuthenticated) {
+      const role = localStorage.getItem('role');
+      setUserName(role === 'admin' ? 'Admin' : 'Member');
+      // In a real app, you'd get the email from the token or another API call
+      setUserEmail(role === 'admin' ? 'admin@lotus.dev' : 'member@vietnamair.com');
+    }
+  }, [isAuthenticated]);
+
+
+  const handleLogout = () => {
+    const role = localStorage.getItem('role');
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    // Redirect to the correct login page after logout
+    if (role === 'admin') {
+        router.push("/admin/login");
+    } else {
+        router.push("/login");
+    }
+    router.refresh(); // To ensure state is cleared
   };
 
-  const userEmail = user?.email || (role === 'admin' ? 'admin@lotus.dev' : 'member@vietnamair.com');
-  const userName = role === 'admin' ? 'Admin' : 'Member';
-
-
-  if (!user) {
+  if (!isAuthenticated) {
     return (
        <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -60,7 +77,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage src="https://placehold.co/100x100.png" alt="@shadcn" data-ai-hint="avatar man" />
-            <AvatarFallback>{role === 'admin' ? 'A' : 'M'}</AvatarFallback>
+            <AvatarFallback>{authRole === 'admin' ? 'A' : 'M'}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
