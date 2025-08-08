@@ -12,7 +12,13 @@ interface RequestOptions {
 export async function callApi<T>(options: RequestOptions): Promise<T> {
   const { method, path, body, params } = options;
 
-  const url = params ? `${path}?${stringify(params)}` : path;
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  if (!baseUrl) {
+    throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined in environment variables.');
+  }
+
+  const url = params ? `${baseUrl}${path}?${stringify(params)}` : `${baseUrl}${path}`;
 
   const fetchOptions: RequestInit = {
     method,

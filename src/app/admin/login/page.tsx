@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { LotusIcon } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { callApi } from "@/lib/api-client";
 
 
 export default function AdminLoginPage() {
@@ -36,8 +36,13 @@ export default function AdminLoginPage() {
         const password = formData.get("password") as string;
 
         try {
-            const response = await api.post('/api/auth/login', { email, password });
-            const { token, role } = response.data;
+            const response = await callApi<{ token: string; role: string }>({
+                method: 'POST',
+                path: '/api/auth/login',
+                body: { email, password },
+            });
+
+            const { token, role } = response;
 
             if (role === 'admin') {
                 localStorage.setItem('token', token);
@@ -52,7 +57,7 @@ export default function AdminLoginPage() {
                 });
             }
         } catch (error: any) {
-             const desc = error.response?.status === 403 
+             const desc = error.message.includes('403') 
                 ? "Invalid email or password."
                 : "An unexpected error occurred.";
             setError(desc);
@@ -111,7 +116,7 @@ export default function AdminLoginPage() {
                         </Link>
                     </div>
                     </form>
-                </Content>
+                </CardContent>
             </Card>
         </main>
     );
