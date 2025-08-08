@@ -20,6 +20,7 @@ import {
 import { LotusIcon } from "@/components/icons";
 import { Button } from "../ui/button";
 import { useTranslation } from "@/lib/i18n";
+import React from "react";
 
 // A mock hook to simulate getting user role
 const useUserRole = () => {
@@ -52,10 +53,10 @@ export function AppSidebar() {
       roles: ['member', 'admin']
     },
     {
-      href: "/claim-miles",
+      href: "/member/claim-miles",
       label: t('sidebar.claim_miles'),
       icon: FilePlus,
-      roles: ['member', 'admin']
+      roles: ['member']
     },
     {
       href: "/admin/claims",

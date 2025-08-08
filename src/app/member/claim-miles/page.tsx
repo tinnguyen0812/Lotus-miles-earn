@@ -32,9 +32,9 @@ export default function ClaimMilesPage() {
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
                    <p>1. Fill in your flight number and date manually.</p>
-                   <p>2. For faster processing, upload your e-ticket or boarding pass.</p>
-                   <p>3. Our AI will attempt to extract the details automatically.</p>
-                   <p>4. Review the extracted information and submit your claim.</p>
+                   <p>2. Upload your e-ticket or boarding pass for our records.</p>
+                   <p>3. Review the information and submit your claim.</p>
+                   <p>4. Your claim will be reviewed by our team.</p>
                 </CardContent>
             </Card>
         </div>

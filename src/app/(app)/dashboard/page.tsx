@@ -15,7 +15,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/claim-miles">
+          <Link href="/member/claim-miles">
             <PlusCircle className="mr-2 h-4 w-4" />
             Claim New Miles
           </Link>
