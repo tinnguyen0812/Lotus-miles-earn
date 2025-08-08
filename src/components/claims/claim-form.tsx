@@ -64,14 +64,14 @@ export function ClaimForm() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Claim Details</CardTitle>
-        <FormDescription>
-            You can fill the form manually and optionally upload an attachment.
-        </FormDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
+      <Form {...form}>
+        <CardHeader>
+          <CardTitle>Claim Details</CardTitle>
+          <FormDescription>
+              You can fill the form manually and optionally upload an attachment.
+          </FormDescription>
+        </CardHeader>
+        <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
@@ -166,8 +166,8 @@ export function ClaimForm() {
               Submit Claim
             </Button>
           </form>
-        </Form>
-      </CardContent>
+        </CardContent>
+      </Form>
     </Card>
   );
 }
