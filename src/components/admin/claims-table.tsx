@@ -15,45 +15,30 @@ import { CheckCircle, Download, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { callApi } from "@/lib/api-client";
 
-const mockClaims = [
-  {
-    id: "CLM789123",
-    userName: "Alex Johnson",
-    userId: "user001",
-    flightNumber: "VN248",
-    flightDate: "2024-07-20",
-    submissionDate: "2024-07-21",
-    status: "pending",
-    attachmentUrl: "#",
-    miles: 1500,
-  },
-  {
-    id: "CLM456789",
-    userName: "Maria Garcia",
-    userId: "user002",
-    flightNumber: "VN773",
-    flightDate: "2024-07-18",
-    submissionDate: "2024-07-19",
-    status: "pending",
-    attachmentUrl: "#",
-    miles: 2800,
-  },
-  {
-    id: "CLM123456",
-    userName: "Sam Chen",
-    userId: "user003",
-    flightNumber: "QH1021",
-    flightDate: "2024-07-15",
-    submissionDate: "2024-07-16",
-    status: "pending",
-    attachmentUrl: "#",
-    miles: 850,
-  },
-];
+interface AdminClaim {
+  id: string;
+  userName: string;
+  userId: string;
+  flightNumber: string;
+  flightDate: string;
+  submissionDate: string;
+  status: string;
+  attachmentUrl: string;
+  miles: number;
+}
 
 export function ClaimsTable() {
-  const [claims, setClaims] = React.useState(mockClaims);
+  const [claims, setClaims] = React.useState<AdminClaim[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(true);
   const { toast } = useToast();
+
+  React.useEffect(() => {
+    callApi<AdminClaim[]>({ method: "GET", path: "/api/claims", params: { status: "pending" } })
+      .then((data) => setClaims(data))
+      .catch((err: any) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleReview = async (
     claimId: string,
@@ -96,7 +81,19 @@ export function ClaimsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {claims.length > 0 ? (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : error ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center text-destructive">
+                {error}
+              </TableCell>
+            </TableRow>
+          ) : claims.length > 0 ? (
             claims.map((claim) => (
               <TableRow key={claim.id}>
                 <TableCell className="font-medium">{claim.id}</TableCell>
