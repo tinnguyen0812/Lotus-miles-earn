@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
-                        <Input id="password" name="password" type="password" required defaultValue="admin123!@#" />
+                        <Input id="password" name="password" type="password" required />
                     </div>
                     {error && <p className="text-sm font-medium text-destructive">{error}</p>}
                     <Button type="submit" className="w-full" disabled={loading}>
