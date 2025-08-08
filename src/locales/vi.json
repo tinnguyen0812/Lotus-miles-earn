@@ -1,0 +1,27 @@
+{
+  "app_name": "Trung tâm Hội viên Bông Sen Vàng",
+  "header": {
+    "title": "Chào mừng Hội viên"
+  },
+  "sidebar": {
+    "dashboard": "Bảng điều khiển",
+    "claim_miles": "Yêu cầu cộng dặm",
+    "admin_review": "Xét duyệt",
+    "settings": "Cài đặt"
+  },
+  "user_nav": {
+    "name": "Hội viên",
+    "email": "hoivien@vietnamair.com",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "dashboard": {
+    "stats": {
+      "total_miles": "Tổng số dặm",
+      "tier_status": "Hạng thẻ",
+      "tier_progress": "Tiến độ hạng thẻ",
+      "pending_claims": "Yêu cầu chờ duyệt"
+    }
+  }
+}

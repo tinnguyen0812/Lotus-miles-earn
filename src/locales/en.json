@@ -1,0 +1,27 @@
+{
+  "app_name": "Lotus Loyalty Hub",
+  "header": {
+    "title": "Welcome, Member"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "claim_miles": "Claim Miles",
+    "admin_review": "Admin Review",
+    "settings": "Settings"
+  },
+  "user_nav": {
+    "name": "Member",
+    "email": "member@vietnamair.com",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log Out"
+  },
+  "dashboard": {
+    "stats": {
+      "total_miles": "Total Miles",
+      "tier_status": "Tier Status",
+      "tier_progress": "Next Tier Progress",
+      "pending_claims": "Pending Claims"
+    }
+  }
+}
