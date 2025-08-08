@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   Card,
   CardContent,
@@ -17,46 +18,28 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { callApi } from "@/lib/api-client";
 
-const mockClaims = [
-  {
-    id: "CLM987654",
-    flightNumber: "VN248",
-    flightDate: "2024-05-15",
-    status: "Approved",
-    miles: 1500,
-  },
-  {
-    id: "CLM876543",
-    flightNumber: "VJ161",
-    flightDate: "2024-04-22",
-    status: "Approved",
-    miles: 950,
-  },
-  {
-    id: "CLM765432",
-    flightNumber: "QH1021",
-    flightDate: "2024-03-30",
-    status: "Rejected",
-    miles: 0,
-  },
-  {
-    id: "CLM654321",
-    flightNumber: "VN773",
-    flightDate: "2024-02-11",
-    status: "Approved",
-    miles: 2800,
-  },
-  {
-    id: "CLM543210",
-    flightNumber: "VN216",
-    flightDate: "2024-01-05",
-    status: "Pending",
-    miles: 0,
-  },
-];
+interface Claim {
+  id: string;
+  flightNumber: string;
+  flightDate: string;
+  status: string;
+  miles: number;
+}
 
 export function ClaimsHistory() {
+  const [claims, setClaims] = React.useState<Claim[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    callApi<Claim[]>({ method: "GET", path: "/api/claims" })
+      .then((data) => setClaims(data))
+      .catch((err: any) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -67,48 +50,72 @@ export function ClaimsHistory() {
       </CardHeader>
       <CardContent>
         <div className="w-full overflow-x-auto">
-            <Table>
+          <Table>
             <TableHeader>
-                <TableRow>
+              <TableRow>
                 <TableHead>Claim ID</TableHead>
                 <TableHead>Flight</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Miles</TableHead>
-                </TableRow>
+              </TableRow>
             </TableHeader>
             <TableBody>
-                {mockClaims.map((claim) => (
-                <TableRow key={claim.id}>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : error ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-destructive">
+                    {error}
+                  </TableCell>
+                </TableRow>
+              ) : claims.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No recent claims.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                claims.map((claim) => (
+                  <TableRow key={claim.id}>
                     <TableCell className="font-medium">{claim.id}</TableCell>
                     <TableCell>{claim.flightNumber}</TableCell>
                     <TableCell>{claim.flightDate}</TableCell>
                     <TableCell>
-                    <Badge
+                      <Badge
                         variant={
-                        claim.status === "Approved"
+                          claim.status === "Approved"
                             ? "default"
                             : claim.status === "Pending"
                             ? "secondary"
                             : "destructive"
                         }
-                        className={cn(claim.status === 'Approved' && 'bg-green-600 text-white')}
-                    >
+                        className={cn(
+                          claim.status === "Approved" && "bg-green-600 text-white"
+                        )}
+                      >
                         {claim.status}
-                    </Badge>
+                      </Badge>
                     </TableCell>
                     <TableCell
-                    className={cn(
+                      className={cn(
                         "text-right font-semibold",
                         claim.status === "Approved" && "text-green-600"
-                    )}
+                      )}
                     >
-                    {claim.status === "Approved" ? `+${claim.miles.toLocaleString()}` : "-"}
+                      {claim.status === "Approved"
+                        ? `+${claim.miles.toLocaleString()}`
+                        : "-"}
                     </TableCell>
-                </TableRow>
-                ))}
+                  </TableRow>
+                ))
+              )}
             </TableBody>
-            </Table>
+          </Table>
         </div>
       </CardContent>
     </Card>
