@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +16,13 @@ import { LotusIcon } from "@/components/icons";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-
+import { callApi } from '@/lib/api-client'
+type SignupResp = {
+  ok?: boolean
+  token?: string
+  role?: 'member' | 'admin'
+  message?: string
+}
 export default function SignupPage() {
     const router = useRouter();
     const { toast } = useToast();
@@ -27,41 +31,49 @@ export default function SignupPage() {
 
 
     const handleSignup = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
+  e.preventDefault()
+  setLoading(true)
+  setError('')
 
-        const formData = new FormData(e.target as HTMLFormElement);
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-        const confirmPassword = formData.get("confirm-password") as string;
+  const form = new FormData(e.target as HTMLFormElement)
+  const email = String(form.get('email') || '')
+  const password = String(form.get('password') || '')
+  const confirmPassword = String(form.get('confirm-password') || '')
 
-        if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            setLoading(false);
-            return;
-        }
+  if (password !== confirmPassword) {
+    setError('Passwords do not match.')
+    setLoading(false)
+    return
+  }
 
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            // On successful signup, Firebase automatically signs the user in.
-            // The useAuth hook will detect this and redirect.
-            toast({
-              title: "Account Created",
-              description: "You have been successfully signed up and logged in.",
-            });
-            router.push("/member/dashboard");
-        } catch (error: any) {
-            if (error.code === 'auth/email-already-in-use') {
-                setError("This email address is already in use.");
-            } else {
-                setError("An error occurred during sign up. Please try again.");
-            }
-            console.error("Signup Error:", error);
-        } finally {
-            setLoading(false);
-        }
+  try {
+    // ⚠️ chỉnh path cho đúng API backend của bạn (ví dụ: '/auth/signup' hoặc '/api/auth/signup')
+    const res = await callApi<SignupResp>({
+      method: 'POST',
+      path: '/auth/signup',
+      body: { email, password }
+    })
+
+    // 2 hướng: backend có trả token ngay (auto login) hoặc chỉ báo ok rồi yêu cầu login
+    if (res?.token) {
+      // Auto login
+      localStorage.setItem('token', res.token)
+      if (res.role) localStorage.setItem('role', res.role)
+      toast({ title: 'Account created', description: 'Welcome!' })
+      router.push(res.role === 'admin' ? '/admin/claims' : '/member/dashboard')
+    } else {
+      // Chỉ signup thành công -> chuyển qua trang login
+      toast({ title: 'Account created', description: 'Please sign in to continue.' })
+      router.push('/login')
     }
+  } catch (err: any) {
+    // callApi đã throw Error(message) nếu API trả lỗi
+    setError(err?.message || 'An error occurred during sign up. Please try again.')
+    console.error('Signup Error:', err)
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
