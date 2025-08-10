@@ -9,23 +9,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import withAdminGuard from "@/components/auth/withAdminGuard";
+import { useTranslation } from "@/lib/i18n";
 
 function AdminClaimsPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Claim Management</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          {t("admin.claims.title")}
+        </h1>
         <p className="text-muted-foreground">
-          Review and process member mileage claims.
+          {t("admin.claims.subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Pending Claims</CardTitle>
-          <CardDescription>
-            The following claims require your review.
-          </CardDescription>
+          <CardTitle>{t("admin.claims.listTitle")}</CardTitle>
+          <CardDescription>{t("admin.claims.listDesc")}</CardDescription>
         </CardHeader>
         <CardContent>
           <ClaimsTable />
