@@ -13,7 +13,7 @@ import { useTranslation } from "@/lib/i18n"; // ✅ dùng i18n của dự án
 type Props = { status?: "pending" | "approved" | "rejected" | "all"; query?: string };
 
 // Nếu backend đang là /api/claims thì chỉnh lại hằng số này
-const BASE = "/api/claims";
+const BASE = "/api/admin/claims";
 
 export function ClaimsTable({ status = "pending", query = "" }: Props) {
   const { t, locale } = useTranslation();

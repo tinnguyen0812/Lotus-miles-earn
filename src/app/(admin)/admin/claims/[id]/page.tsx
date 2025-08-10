@@ -16,21 +16,13 @@ import {
   Download,
   ChevronLeft,
   User2,
-  Fingerprint,
-  Mail,
-  Phone,
-  Medal,
-  Coins,
   Plane,
   CalendarDays,
   Route as RouteIcon,
-  Armchair,
-  Ruler,
-  Paperclip,
   MessageSquareText,
   type LucideIcon,
 } from 'lucide-react';
-const BASE = '/api/claims';
+const BASE = '/api/admin/claims';
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
