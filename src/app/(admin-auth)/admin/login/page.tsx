@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
 
     try {
       const resp = await callApi<{ token: string; role: "admin" | "member" }>(
-        { method: "POST", path: "/api/auth/login", body: { email, password } }
+        { method: "POST", path: "/api/admin/auth/login", body: { email, password } }
       );
 
       if (resp.role !== "admin") {
