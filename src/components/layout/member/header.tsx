@@ -1,11 +1,11 @@
 "use client";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { LanguageSwitcher } from "../language-switcher";
-import { UserNav } from "./user-nav";
+import { LanguageSwitcher } from "../../language-switcher";
+import { UserNav } from "../user-nav";
 import { useTranslation } from "@/lib/i18n";
 
-export function AppHeader() {
+export function MemberHeader() {
   const { t } = useTranslation();
 
   return (
