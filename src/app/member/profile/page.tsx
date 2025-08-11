@@ -1,16 +1,20 @@
 "use client";
 
 import withMemberGuard from "@/components/auth/withMemberGuard";
-import { useTranslation } from "@/lib/i18n";
+import { AccountInfo, MemberInfo } from "@/components/member/account/AccountInfo";
 
-function ProfilePage() {
-  const { t } = useTranslation();
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold tracking-tight">{t("member.profile.title")}</h1>
-      <p className="text-muted-foreground">{t("member.profile.placeholder")}</p>
-    </div>
-  );
+function AccountInfoPage() {
+  // mock – về sau map từ API profile
+  const me: MemberInfo = {
+    name: "Nguyễn Văn An",
+    email: "tin.nguyenba1803@gmail.com",
+    membershipTier: "gold",
+    totalMiles: 45750,
+    milesThisYear: 12500,
+    nextTierMiles: 25000,
+  };
+
+  return <AccountInfo memberInfo={me} />;
 }
 
-export default withMemberGuard(ProfilePage);
+export default withMemberGuard(AccountInfoPage);

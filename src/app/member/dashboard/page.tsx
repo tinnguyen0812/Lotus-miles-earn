@@ -1,34 +1,27 @@
 "use client";
 
+import * as React from "react";
 import withMemberGuard from "@/components/auth/withMemberGuard";
-import { SummaryCard } from "@/components/member/cards/SummaryCard";
-import { ClaimsTable, Claim } from "@/components/member/claims/ClaimsTable";
-import { useTranslation } from "@/lib/i18n";
+import { MemberDashboard, type MemberInfo } from "@/components/member/cards/SummaryCard";
 
+// TODO: Khi có API profile, lấy dữ liệu thực thay cho mock dưới đây.
 function DashboardPage() {
-  const { t } = useTranslation();
-  const stats = [
-    { title: t("member.dashboard.summary.total_miles"), value: "24,000" },
-    { title: t("member.dashboard.summary.tier_status"), value: "Silver" },
-    { title: t("member.dashboard.summary.tier_progress"), value: "60%" },
-    { title: t("member.dashboard.summary.pending_claims"), value: "2" },
-  ];
-
-  const claims: Claim[] = [
-    { id: "1", flightNumber: "VN123", date: "2024-06-01", status: "approved", miles: 1000 },
-    { id: "2", flightNumber: "VN456", date: "2024-06-15", status: "pending", miles: 500 },
-    { id: "3", flightNumber: "VN789", date: "2024-07-01", status: "rejected", miles: 750 },
-  ];
+  // Mock demo để xem UI. Thay bằng dữ liệu thật từ API/decoded token khi sẵn sàng.
+  const memberInfo = React.useMemo<MemberInfo>(
+    () => ({
+      name: "Nguyễn Văn An",
+      email: "tin.nguyenba1803@gmail.com",
+      membershipTier: "Gold",      // "Platinum" | "Gold" | "Silver" | "Member"
+      totalMiles: 45750,
+      milesThisYear: 12500,
+      nextTierMiles: 25000,        // mốc cần để lên hạng kế tiếp
+    }),
+    []
+  );
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t("member.dashboard.title")}</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <SummaryCard key={s.title} title={s.title} value={s.value} />
-        ))}
-      </div>
-      <ClaimsTable claims={claims} />
+      <MemberDashboard memberInfo={memberInfo} />
     </div>
   );
 }

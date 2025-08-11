@@ -8,7 +8,11 @@
     "lang": {
       "en": "English",
       "vi": "Tiếng Việt"
-    }
+    },
+    "detail": "Chi tiết",
+    "edit": "Chỉnh sửa",
+    "cancel": "Hủy",
+    "save": "Lưu thay đổi"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -33,11 +37,13 @@
   },
   "member": {
     "app_name": "Trung tâm Hội viên Bông Sen Vàng",
-    "sidebar": {
-      "dashboard": "Bảng điều khiển",
-      "claim_miles": "Yêu cầu cộng dặm thủ công",
-      "rewards": "Phần thưởng",
-      "profile": "Hồ sơ"
+    "nav": {
+      "home": "Trang chủ",
+      "history": "Lịch sử tích điểm",
+      "manual_request": "Yêu cầu tích dặm",
+      "request_tracking": "Theo dõi yêu cầu",
+      "account_info": "Thông tin tài khoản",
+      "logout": "Đăng xuất"
     },
     "user": {
       "name": "Hội viên",
@@ -46,28 +52,140 @@
       "settings": "Cài đặt",
       "logout": "Đăng xuất"
     },
-    "dashboard": {
-      "title": "Bảng điều khiển",
-      "summary": {
-        "total_miles": "Tổng số dặm",
-        "tier_status": "Hạng thẻ",
-        "tier_progress": "Tiến độ hạng thẻ",
-        "pending_claims": "Yêu cầu chờ duyệt"
-      },
-      "recent_claims": "Các yêu cầu gần đây",
-      "recent_claims_desc": "Lịch sử các yêu cầu cộng dặm của bạn."
+    "tier": {
+      "platinum": "Platinum",
+      "gold": "Gold",
+      "silver": "Silver",
+      "member": "Thành viên"
     },
-    "claim_miles": {
-      "title": "Yêu cầu cộng dặm thủ công",
-      "description": "Gửi thông tin chuyến bay để cộng dặm."
+    "dashboard": {
+      "welcome": "Chào mừng trở lại, {{name}}",
+      "total_miles": "Tổng số dặm",
+      "accumulated_since_join": "Tích lũy từ khi gia nhập",
+      "miles_this_year": "Dặm năm nay",
+      "from_date": "Từ {{date}}",
+      "upgrade_progress": "Tiến độ thăng hạng",
+      "miles_remaining": "Còn {{count}} dặm để thăng hạng",
+      "recent_activity": "Hoạt động gần đây",
+      "activity": {
+        "flight": "Chuyến bay {{route}}",
+        "partner_purchase": "Mua sắm tại đối tác",
+        "manual_claim": "Yêu cầu tích dặm thủ công",
+        "processing": "Đang xử lý",
+        "miles_plus": "+{{count}} dặm"
+      }
+    },
+    "claim": {
+      "title": "Gửi yêu cầu tích dặm thủ công",
+      "subtitle": "Gửi yêu cầu cho các chuyến bay hoặc giao dịch chưa được tích dặm tự động.",
+      "section": {
+        "info": "Thông tin yêu cầu"
+      },
+      "fields": {
+        "request_type": "Loại yêu cầu",
+        "flight_no": "Số hiệu chuyến bay",
+        "route": "Tuyến bay",
+        "flight_date": "Ngày bay",
+        "expected_miles": "Số dặm mong đợi",
+        "booking_ref": "Mã đặt chỗ / Số hóa đơn",
+        "ticket_no": "Số vé / Số tham chiếu",
+        "description": "Mô tả",
+        "attachments": "Đính kèm chứng từ"
+      },
+      "placeholders": {
+        "request_type": "Chọn loại yêu cầu",
+        "flight_no": "VD: VN210",
+        "booking_ref": "ABC123 hoặc số hóa đơn",
+        "ticket_no": "Số vé hoặc tham chiếu",
+        "description": "Vui lòng mô tả chi tiết giao dịch của bạn..."
+      },
+      "types": {
+        "missing_flight": "Chuyến bay bị thiếu dặm",
+        "partner_purchase": "Mua sắm tại đối tác",
+        "credit_card": "Thanh toán thẻ tín dụng",
+        "hotel_stay": "Lưu trú khách sạn",
+        "other": "Khác"
+      },
+      "upload": {
+        "hint": "Kéo thả file hoặc bấm để chọn",
+        "types": "Hỗ trợ: PDF, JPG, PNG, DOC (tối đa 10MB mỗi file)",
+        "choose": "Chọn file",
+        "added": "File đã đính kèm"
+      },
+      "submit": "Gửi yêu cầu",
+      "notes": {
+        "title": "Lưu ý quan trọng",
+        "n1": "Yêu cầu cần gửi trong vòng 6 tháng kể từ ngày giao dịch.",
+        "n2": "Vui lòng đính kèm đủ chứng từ: vé máy bay, hóa đơn, biên lai thanh toán.",
+        "n3": "Thời gian xử lý: 3–5 ngày làm việc.",
+        "n4": "Bạn có thể theo dõi trạng thái ở mục 'Theo dõi yêu cầu'."
+      },
+      "toast": {
+        "added_files_title": "Đã thêm file",
+        "added_files_desc": "Đã thêm {{count}} file.",
+        "removed_file_title": "Đã xóa file",
+        "submitted_title": "Đã gửi yêu cầu",
+        "submitted_desc": "Chúng tôi sẽ xem xét trong 3–5 ngày làm việc."
+      }
     },
     "rewards": {
       "title": "Phần thưởng",
       "placeholder": "Nội dung phần thưởng đang được cập nhật."
     },
-    "profile": {
-      "title": "Hồ sơ",
-      "placeholder": "Cài đặt hồ sơ đang được cập nhật."
+    "account": {
+      "title": "Thông tin tài khoản",
+      "subtitle": "Quản lý thông tin cá nhân và cài đặt tài khoản của bạn",
+      "status": {
+        "title": "Trạng thái thành viên",
+        "total": "Tổng dặm tích lũy",
+        "this_year": "Dặm năm nay",
+        "to_next": "Dặm để thăng hạng"
+      },
+      "benefits": {
+        "title": "Quyền lợi hạng {{tier}}",
+        "platinum": [
+          "Ưu tiên check-in",
+          "Lounge miễn phí",
+          "Nâng hạng miễn phí",
+          "Hành lý thêm 40kg"
+        ],
+        "gold": [
+          "Ưu tiên check-in",
+          "Lounge có phí ưu đãi",
+          "Hành lý thêm 20kg",
+          "Tích dặm thưởng 50%"
+        ],
+        "silver": [
+          "Check-in online ưu tiên",
+          "Hành lý thêm 10kg",
+          "Tích dặm thưởng 25%"
+        ],
+        "basic": [
+          "Tích dặm cơ bản",
+          "Ưu đãi đặc biệt"
+        ]
+      },
+      "personal": {
+        "title": "Thông tin cá nhân",
+        "name": "Họ và tên",
+        "phone": "Số điện thoại",
+        "dob": "Ngày sinh",
+        "address": "Địa chỉ",
+        "email_note": "Email không thể thay đổi"
+      },
+      "security": {
+        "title": "Bảo mật",
+        "change_password": {
+          "title": "Đổi mật khẩu",
+          "subtitle": "Cập nhật mật khẩu để bảo mật tài khoản",
+          "cta": "Đổi mật khẩu"
+        },
+        "mfa": {
+          "title": "Xác thực 2 bước",
+          "subtitle": "Tăng cường bảo mật cho tài khoản",
+          "cta": "Kích hoạt"
+        }
+      }
     },
     "claims_table": {
       "claim_id": "Mã yêu cầu",
@@ -81,7 +199,64 @@
       "approved": "Đã duyệt",
       "pending": "Chờ duyệt",
       "rejected": "Từ chối"
-=======
+    },
+    "history": {
+      "title": "Lịch sử tích điểm",
+      "subtitle": "Theo dõi tất cả các giao dịch tích dặm của bạn",
+      "recent_transactions": "Giao dịch gần đây",
+      "columns": {
+        "type": "Loại giao dịch",
+        "description": "Mô tả",
+        "date": "Ngày giao dịch",
+        "miles": "Số dặm",
+        "status": "Trạng thái"
+      },
+      "type": {
+        "flight": "Chuyến bay",
+        "partner": "Đối tác",
+        "manual": "Thủ công",
+        "bonus": "Thưởng"
+      },
+      "status": {
+        "completed": "Đã cộng",
+        "pending": "Đang xử lý",
+        "rejected": "Từ chối"
+      },
+      "summary": {
+        "this_month": "Tổng dặm tháng này",
+        "completed": "Giao dịch hoàn thành",
+        "pending": "Đang chờ xử lý"
+      }
+    },
+    "requests": {
+      "title": "Theo dõi yêu cầu",
+      "subtitle": "Theo dõi trạng thái các yêu cầu tích dặm thủ công của bạn",
+      "create": "Tạo yêu cầu mới",
+      "create_first": "Tạo yêu cầu đầu tiên",
+      "submitted_on": "Gửi ngày",
+      "expected": "Dặm mong đợi",
+      "actual": "Dặm thực tế",
+      "processing_notes": "Ghi chú xử lý",
+      "rejection_reason": "Lý do từ chối",
+      "status": {
+        "pending": "Chờ xử lý",
+        "processing": "Đang xử lý",
+        "approved": "Đã cộng",
+        "rejected": "Từ chối"
+      },
+      "type": {
+        "missing-flight": "Chuyến bay thiếu dặm",
+        "partner-purchase": "Mua sắm đối tác",
+        "hotel-stay": "Lưu trú khách sạn",
+        "credit-card": "Thẻ tín dụng",
+        "other": "Khác"
+      },
+      "empty": {
+        "title": "Chưa có yêu cầu nào",
+        "subtitle": "Bạn chưa gửi yêu cầu tích dặm thủ công nào"
+      }
+    }
+  },
   "admin": {
     "claims": {
       "title": "Quản lý yêu cầu tích dặm thủ công",
