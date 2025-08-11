@@ -3,6 +3,13 @@
   "header": {
     "title": "Chào mừng Hội viên"
   },
+  "common": {
+    "language": "Ngôn ngữ",
+    "lang": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    }
+  },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
     "claim_miles": "Yêu cầu cộng dặm",
@@ -74,6 +81,93 @@
       "approved": "Đã duyệt",
       "pending": "Chờ duyệt",
       "rejected": "Từ chối"
+=======
+  "admin": {
+    "claims": {
+      "title": "Quản lý yêu cầu tích dặm thủ công",
+      "subtitle": "Xem xét và phê duyệt yêu cầu tích dặm của thành viên.",
+      "kpi": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối",
+        "totalMiles": "Tổng dặm"
+      },
+      "listTitle": "Yêu cầu chờ duyệt",
+      "listDesc": "Các yêu cầu dưới đây cần bạn xem xét.",
+      "filter": {
+        "search_placeholder": "Tìm tên / email / ID…",
+        "status": {
+          "pending": "Chờ duyệt",
+          "approved": "Đã duyệt",
+          "rejected": "Từ chối",
+          "all": "Tất cả"
+        }
+      },
+      "table": {
+        "member": "Thành viên",
+        "submittedAt": "Ngày gửi",
+        "flight": "Chuyến bay",
+        "miles": "Dặm",
+        "status": "Trạng thái",
+        "actions": "Hành động",
+        "empty": "Không có dữ liệu",
+        "loading": "Đang tải…"
+      },
+      "toast": {
+        "approved": "Đã duyệt yêu cầu",
+        "rejected": "Đã từ chối yêu cầu"
+      },
+      "error": {
+        "load": "Không tải được danh sách.",
+        "approve": "Duyệt thất bại.",
+        "reject": "Từ chối thất bại."
+      }
+    },
+    "detail": {
+      "loading": "Đang tải…",
+      "notFound": "Không tìm thấy yêu cầu.",
+      "back": "Quay lại",
+      "requestInfo": "Thông tin yêu cầu",
+      "requestId": "Mã yêu cầu",
+      "sentAt": "Ngày gửi",
+      "pointsLabel": "Số dặm yêu cầu",
+      "memberInfo": "Thông tin thành viên",
+      "currentMiles": "Số dặm hiện tại",
+      "flightInfo": "Chi tiết chuyến bay",
+      "date": "Ngày bay",
+      "distance": "Khoảng cách",
+      "reason": "Lý do yêu cầu",
+      "attachments": "Tệp đính kèm",
+      "download": "Tải xuống",
+      "noAttachments": "Không có tệp đính kèm",
+      "approve": "Duyệt yêu cầu",
+      "reject": "Từ chối yêu cầu"
+    },
+    "login": {
+      "title": "Admin Portal",
+      "subtitle": "Đăng nhập để truy cập hệ thống quản trị",
+      "email": "Email",
+      "password": "Mật khẩu",
+      "forgot": "Quên mật khẩu?",
+      "remember": "Ghi nhớ đăng nhập",
+      "cta": "Đăng nhập",
+      "signingIn": "Đang đăng nhập…",
+      "failed": "Đăng nhập thất bại",
+      "invalid": "Sai email hoặc mật khẩu.",
+      "noPermission": "Tài khoản này không có quyền truy cập Admin Portal.",
+      "error": "Có lỗi xảy ra, vui lòng thử lại.",
+      "successTitle": "Xin chào",
+      "successDesc": "Bạn đã đăng nhập với quyền admin.",
+      "needHelp": "Cần hỗ trợ?",
+      "contactIT": "Liên hệ IT Support",
+      "secured": "Hệ thống được bảo mật bởi LotusMiles Security"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "claims": "Yêu cầu tích dặm",
+      "members": "Thành viên",
+      "rewards": "Phần thưởng",
+      "settings": "Cài đặt"
     }
   }
 }

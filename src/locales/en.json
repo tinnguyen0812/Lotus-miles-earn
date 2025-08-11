@@ -1,5 +1,12 @@
 {
   "app_name": "Lotus Loyalty Hub",
+  "common": {
+    "language": "Language",
+    "lang": {
+      "en": "English",
+      "vi": "Vietnamese"
+    }
+  },
   "header": {
     "title": "Welcome, Member"
   },
@@ -74,6 +81,92 @@
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected"
+  "admin": {
+    "claims": {
+      "title": "Manual mileage claims",
+      "subtitle": "Review and approve member mileage claims.",
+      "listTitle": "Pending claims",
+      "listDesc": "The following claims require your review.",
+      "kpi": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "totalMiles": "Total miles"
+      },
+      "filter": {
+        "search_placeholder": "Search name / email / ID…",
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "all": "All"
+        }
+      },
+      "table": {
+        "member": "Member",
+        "submittedAt": "Submitted",
+        "flight": "Flight",
+        "miles": "Miles",
+        "status": "Status",
+        "actions": "Actions",
+        "empty": "No data",
+        "loading": "Loading…"
+      },
+      "toast": {
+        "approved": "Claim approved",
+        "rejected": "Claim rejected"
+      },
+      "error": {
+        "load": "Failed to load claims.",
+        "approve": "Approve failed.",
+        "reject": "Reject failed."
+      }
+    },
+    "detail": {
+      "loading": "Loading…",
+      "notFound": "Claim not found.",
+      "back": "Back",
+      "requestInfo": "Request information",
+      "requestId": "Request ID",
+      "sentAt": "Submitted",
+      "pointsLabel": "Requested miles",
+      "memberInfo": "Member info",
+      "currentMiles": "Current miles",
+      "flightInfo": "Flight info",
+      "date": "Date",
+      "distance": "Distance",
+      "reason": "Reason",
+      "attachments": "Attachments",
+      "download": "Download",
+      "noAttachments": "No attachments",
+      "approve": "Approve claim",
+      "reject": "Reject claim"
+    },
+    "login": {
+      "title": "Admin Portal",
+      "subtitle": "Sign in to access the management panel",
+      "email": "Email",
+      "password": "Password",
+      "forgot": "Forgot password?",
+      "remember": "Remember me",
+      "cta": "Sign in",
+      "signingIn": "Signing in…",
+      "failed": "Login failed",
+      "invalid": "Invalid email or password.",
+      "noPermission": "This account is not allowed to access Admin Portal.",
+      "error": "Unexpected error. Please try again.",
+      "successTitle": "Welcome",
+      "successDesc": "You are now signed in as admin.",
+      "needHelp": "Need help?",
+      "contactIT": "Contact IT Support",
+      "secured": "Secured by LotusMiles Security"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "claims": "Manual mileage claims",
+      "members": "Members",
+      "rewards": "Rewards",
+      "settings": "Settings"
     }
   }
 }

@@ -19,13 +19,13 @@ import {
   FilePlus,
 } from "lucide-react";
 import { LotusIcon } from "@/components/icons";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useTranslation } from "@/lib/i18n";
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 
-export function AppSidebar() {
+export function MemberSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { role } = useAuth(pathname.startsWith('/admin') ? 'admin' : 'member');
