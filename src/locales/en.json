@@ -31,6 +31,56 @@
       "pending_claims": "Pending Claims"
     }
   },
+  "member": {
+    "app_name": "Lotus Loyalty Hub",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "claim_miles": "Manual mileage claims",
+      "rewards": "Rewards",
+      "profile": "Settings/Profile"
+    },
+    "user": {
+      "name": "Member",
+      "email": "member@vietnamair.com",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Log Out"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "summary": {
+        "total_miles": "Total Miles",
+        "tier_status": "Tier Status",
+        "tier_progress": "Next Tier Progress",
+        "pending_claims": "Pending Claims"
+      },
+      "recent_claims": "Recent Claims",
+      "recent_claims_desc": "A history of your recent mileage claims."
+    },
+    "claim_miles": {
+      "title": "Manual mileage claims",
+      "description": "Submit your flight details to claim your miles."
+    },
+    "rewards": {
+      "title": "Rewards",
+      "placeholder": "Rewards content coming soon."
+    },
+    "profile": {
+      "title": "Profile",
+      "placeholder": "Profile settings coming soon."
+    },
+    "claims_table": {
+      "claim_id": "Claim ID",
+      "flight": "Flight",
+      "date": "Date",
+      "status": "Status",
+      "miles": "Miles",
+      "no_claims": "No claims found."
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
   "admin": {
     "claims": {
       "title": "Manual mileage claims",

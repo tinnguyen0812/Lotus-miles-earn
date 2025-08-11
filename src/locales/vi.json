@@ -31,6 +31,57 @@
       "pending_claims": "Yêu cầu chờ duyệt"
     }
   },
+  "member": {
+    "app_name": "Trung tâm Hội viên Bông Sen Vàng",
+    "sidebar": {
+      "dashboard": "Bảng điều khiển",
+      "claim_miles": "Yêu cầu cộng dặm thủ công",
+      "rewards": "Phần thưởng",
+      "profile": "Hồ sơ"
+    },
+    "user": {
+      "name": "Hội viên",
+      "email": "hoivien@vietnamair.com",
+      "profile": "Hồ sơ",
+      "settings": "Cài đặt",
+      "logout": "Đăng xuất"
+    },
+    "dashboard": {
+      "title": "Bảng điều khiển",
+      "summary": {
+        "total_miles": "Tổng số dặm",
+        "tier_status": "Hạng thẻ",
+        "tier_progress": "Tiến độ hạng thẻ",
+        "pending_claims": "Yêu cầu chờ duyệt"
+      },
+      "recent_claims": "Các yêu cầu gần đây",
+      "recent_claims_desc": "Lịch sử các yêu cầu cộng dặm của bạn."
+    },
+    "claim_miles": {
+      "title": "Yêu cầu cộng dặm thủ công",
+      "description": "Gửi thông tin chuyến bay để cộng dặm."
+    },
+    "rewards": {
+      "title": "Phần thưởng",
+      "placeholder": "Nội dung phần thưởng đang được cập nhật."
+    },
+    "profile": {
+      "title": "Hồ sơ",
+      "placeholder": "Cài đặt hồ sơ đang được cập nhật."
+    },
+    "claims_table": {
+      "claim_id": "Mã yêu cầu",
+      "flight": "Chuyến bay",
+      "date": "Ngày",
+      "status": "Trạng thái",
+      "miles": "Dặm",
+      "no_claims": "Không có yêu cầu nào."
+    },
+    "status": {
+      "approved": "Đã duyệt",
+      "pending": "Chờ duyệt",
+      "rejected": "Từ chối"
+=======
   "admin": {
     "claims": {
       "title": "Quản lý yêu cầu tích dặm thủ công",
