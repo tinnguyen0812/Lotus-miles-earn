@@ -78,7 +78,9 @@
     "claim": {
       "title": "Submit manual miles request",
       "subtitle": "Send a request for flights or transactions that didn't earn miles automatically.",
-      "section": { "info": "Request details" },
+      "section": {
+        "info": "Request details"
+      },
       "fields": {
         "request_type": "Request type",
         "flight_no": "Flight number",
@@ -257,64 +259,64 @@
   },
   "admin": {
     "claims": {
-      "title": "Manual mileage claims",
-      "subtitle": "Review and approve member mileage claims.",
-      "listTitle": "Pending claims",
-      "listDesc": "The following claims require your review.",
-      "kpi": {
+      "title": "Manual mileage claims management",
+      "subtitle": "Review and approve manual mileage claims from members",
+      "status": {
         "pending": "Pending",
         "approved": "Approved",
         "rejected": "Rejected",
-        "totalMiles": "Total miles"
+        "total_miles": "Total miles"
       },
-      "filter": {
-        "search_placeholder": "Search name / email / ID…",
-        "status": {
-          "pending": "Pending",
-          "approved": "Approved",
-          "rejected": "Rejected",
-          "all": "All"
-        }
-      },
+      "queue_title": "Pending claims",
+      "search_placeholder": "Search by member name…",
       "table": {
         "member": "Member",
-        "submittedAt": "Submitted",
-        "flight": "Flight",
-        "miles": "Miles",
+        "time": "Submitted",
         "status": "Status",
-        "actions": "Actions",
-        "empty": "No data",
-        "loading": "Loading…"
+        "actions": "Actions"
       },
-      "toast": {
-        "approved": "Claim approved",
-        "rejected": "Claim rejected"
+      "buttons": {
+        "export": "Export report",
+        "view": "View",
+        "prev": "Prev",
+        "next": "Next"
       },
-      "error": {
-        "load": "Failed to load claims.",
-        "approve": "Approve failed.",
-        "reject": "Reject failed."
+      "empty": "No requests.",
+      "showing": "Showing {count} / {total} results",
+      "detail": {
+        "breadcrumb": "Review manual claim",
+        "title": "Request details • {{id}}",
+        "submittedAt": "Submitted:",
+        "memberInfo": "Member information",
+        "fullName": "Full name",
+        "memberCode": "Member code",
+        "phone": "Phone",
+        "tier": "Tier",
+        "tenure": "Joined",
+        "tenureValue": "{{months}} months",
+        "totalMiles": "Total accumulated miles",
+        "flightInfo": "Flight details",
+        "flightNo": "Flight number",
+        "flightDate": "Flight date",
+        "route": "Route",
+        "cabin": "Cabin",
+        "distance": "Distance",
+        "noFlightInfo": "No flight information",
+        "creditMiles": "Credit miles",
+        "milesUnit": "miles",
+        "requestReason": "Member’s note / Reason",
+        "attachments": "Attachments",
+        "download": "Download",
+        "actions": {
+          "approve": "Approve request",
+          "reject": "Reject request"
+        },
+        "rejectDialog": {
+          "title": "Reason for rejection",
+          "placeholder": "Please provide a clear reason for rejection...",
+          "confirm": "Reject"
+        }
       }
-    },
-    "detail": {
-      "loading": "Loading…",
-      "notFound": "Claim not found.",
-      "back": "Back",
-      "requestInfo": "Request information",
-      "requestId": "Request ID",
-      "sentAt": "Submitted",
-      "pointsLabel": "Requested miles",
-      "memberInfo": "Member info",
-      "currentMiles": "Current miles",
-      "flightInfo": "Flight info",
-      "date": "Date",
-      "distance": "Distance",
-      "reason": "Reason",
-      "attachments": "Attachments",
-      "download": "Download",
-      "noAttachments": "No attachments",
-      "approve": "Approve claim",
-      "reject": "Reject claim"
     },
     "login": {
       "title": "Admin Portal",
@@ -337,10 +339,65 @@
     },
     "nav": {
       "dashboard": "Dashboard",
-      "claims": "Manual mileage claims",
+      "requests": "Manual mileage claims",
       "members": "Members",
-      "rewards": "Rewards",
-      "settings": "Settings"
+      "transactions": "Rewards",
+      "add_miles": "Credit miles",
+      "settings": "Settings",
+      "help": "Help",
+      "logout": "Log out"
+    },
+    "addMiles": {
+      "title": "Record manual mileage credit",
+      "subtitle": "Add bonus miles to a member manually",
+      "form": {
+        "sectionTitle": "Transaction details",
+        "memberId": "Member ID *",
+        "memberIdPh": "Enter member ID (e.g. LM-106751)",
+        "miles": "Miles to add *",
+        "milesPh": "Enter miles",
+        "txnType": "Transaction type *",
+        "txnTypePh": "Choose type",
+        "notes": "Notes",
+        "notesPh": "Optional notes for this transaction",
+        "notesHint": "Notes will show up in the member's activity history",
+        "save": "Save transaction",
+        "reset": "Reset"
+      },
+      "types": {
+        "flight": "Flight",
+        "hotel": "Hotel",
+        "car": "Car rental",
+        "bonus": "Bonus miles",
+        "promo": "Promotion",
+        "comp": "Compensation",
+        "other": "Other"
+      },
+      "summary": {
+        "title": "Summary",
+        "member": "Member",
+        "miles": "Miles",
+        "type": "Type",
+        "empty": "Not set"
+      },
+      "recent": {
+        "title": "Recent transactions"
+      },
+      "toast": {
+        "invalidMilesTitle": "Invalid miles",
+        "invalidMilesDesc": "Miles must be a positive number.",
+        "successTitle": "Saved",
+        "successDesc": "Added {{miles}} miles to {{member}}.",
+        "failedTitle": "Failed to save"
+      },
+      "done": {
+        "title": "Transaction saved!",
+        "desc": "Added {{miles}} miles to member {{member}}",
+        "addAnother": "Add another"
+      }
+    },
+    "list": {
+      "view": "View"
     }
   }
 }

@@ -1,152 +1,219 @@
 "use client";
-import * as React from "react";
-import Link from "next/link";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, CheckCircle, XCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { callApi } from "@/lib/api-client";
-import StatusBadge from "@/components/admin/status-badge";
-import type { Claim } from "@/lib/types";
-import { useTranslation } from "@/lib/i18n"; // ✅ dùng i18n của dự án
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Search, Eye, MoreHorizontal, Filter } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
-type Props = { status?: "pending" | "approved" | "rejected" | "all"; query?: string };
+export type AdminClaimRow = {
+  id: string;
+  memberName: string;
+  date: string;                 // dd/MM/yyyy
+  summary: string;
+  status: "pending" | "processing" | "approved" | "rejected";
+  miles: number;
+  avatarText: string;
+};
 
-// Nếu backend đang là /api/claims thì chỉnh lại hằng số này
-const BASE = "/api/admin/claims";
+type Props = {
+  rows?: AdminClaimRow[];
+  stats?: { pending: number; approved: number; rejected: number; totalMiles: number };
+  onViewRequest: (id: string) => void;
+};
 
-export function ClaimsTable({ status = "pending", query = "" }: Props) {
-  const { t, locale } = useTranslation();
-  const nf = React.useMemo(() => new Intl.NumberFormat(locale || "en"), [locale]);
+export default function AdminRequestsDashboard({ rows, stats, onViewRequest }: Props) {
+  const { t } = useTranslation();
 
-  const [rows, setRows] = React.useState<Claim[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const { toast } = useToast();
+  // Mock khi chưa nối API
+  const fallbackRows: AdminClaimRow[] = [
+    { id: "MR-2024-001", memberName: "Nguyễn Thị Lan", date: "26/01/2024", summary: "Chuyến bay VN125 · SGN → HAN", status: "processing", miles: 2500, avatarText: "NL" },
+    { id: "2", memberName: "Trần Văn Nam", date: "26/01/2024", summary: "Khách sạn InterContinental",       status: "processing", miles: 1200, avatarText: "TN" },
+    { id: "3", memberName: "Lê Thị Hương", date: "25/01/2024", summary: "Thuê xe · 3 ngày",                  status: "processing", miles: 450,  avatarText: "LH" }
+  ];
+  const data = rows && rows.length ? rows : fallbackRows;
 
-  async function load() {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await callApi<Claim[]>({
-        method: "GET",
-        path: BASE,
-        params: { status: status === "all" ? undefined : status, q: query || undefined },
-      });
-      setRows(data);
-    } catch (e: any) {
-      setError(e?.message || t("admin.claims.error.load"));
-    } finally {
-      setLoading(false);
+  const computed = useMemo(() => {
+    const p = data.filter(x => x.status === "pending" || x.status === "processing").length;
+    const a = data.filter(x => x.status === "approved").length;
+    const r = data.filter(x => x.status === "rejected").length;
+    const tm = data.reduce((s, x) => s + (x.miles || 0), 0);
+    return {
+      pending: stats?.pending ?? p,
+      approved: stats?.approved ?? a,
+      rejected: stats?.rejected ?? r,
+      totalMiles: stats?.totalMiles ?? tm,
+    };
+  }, [data, stats]);
+
+  const [q, setQ] = useState("");
+  const filtered = useMemo(() => {
+    if (!q.trim()) return data;
+    const k = q.toLowerCase();
+    return data.filter(r =>
+      r.memberName.toLowerCase().includes(k) ||
+      r.summary.toLowerCase().includes(k) ||
+      r.date.toLowerCase().includes(k)
+    );
+  }, [data, q]);
+
+  const Stat = ({
+    label, value, color
+  }: { label: string; value: string | number; color: "orange" | "green" | "red" | "blue" }) => {
+    const map: Record<string, string> = {
+      orange: "bg-orange-100 text-orange-600",
+      green: "bg-green-100 text-green-600",
+      red: "bg-red-100 text-red-600",
+      blue: "bg-blue-100 text-blue-600",
+    };
+    return (
+      <div className="bg-white rounded-lg p-4 border">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-600">{label}</p>
+            <p className="text-2xl font-semibold mt-1">{value}</p>
+          </div>
+          <div className={`w-10 h-10 rounded-lg ${map[color]} grid place-items-center`}>
+            <div className="w-4 h-4 rounded-full bg-current opacity-60" />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const statusBadge = (s: AdminClaimRow["status"]) => {
+    switch (s) {
+      case "approved":
+        return <Badge className="bg-green-100 text-green-700">{t("admin.claims.stats.approved")}</Badge>;
+      case "rejected":
+        return <Badge className="bg-red-100 text-red-700">{t("admin.claims.stats.rejected")}</Badge>;
+      case "processing":
+        return <Badge className="bg-orange-100 text-orange-700">{t("admin.claims.stats.pending")}</Badge>;
+      default:
+        return <Badge variant="secondary">{t("admin.claims.stats.pending")}</Badge>;
     }
-  }
-  React.useEffect(() => { load(); }, [status, query]);
-
-  async function approve(id: string) {
-    try {
-      await callApi({ method: "POST", path: `${BASE}/${id}/approve` });
-      toast({ title: t("admin.claims.toast.approved") });
-      setRows((s) => s.filter((r) => r.id !== id));
-    } catch (e: any) {
-      toast({ title: "Error", description: e?.message || t("admin.claims.error.approve"), variant: "destructive" });
-    }
-  }
-  async function reject(id: string) {
-    try {
-      await callApi({ method: "POST", path: `${BASE}/${id}/reject` });
-      toast({ title: t("admin.claims.toast.rejected") });
-      setRows((s) => s.filter((r) => r.id !== id));
-    } catch (e: any) {
-      toast({ title: "Error", description: e?.message || t("admin.claims.error.reject"), variant: "destructive" });
-    }
-  }
-
-  const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(locale || "en", { year: "numeric", month: "2-digit", day: "2-digit" });
+  };
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{t("admin.claims.table.member")}</TableHead>
-            <TableHead>{t("admin.claims.table.submittedAt")}</TableHead>
-            <TableHead>{t("admin.claims.table.flight")}</TableHead>
-            <TableHead>{t("admin.claims.table.miles")}</TableHead>
-            <TableHead>{t("admin.claims.table.status")}</TableHead>
-            <TableHead className="text-right">{t("admin.claims.table.actions")}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {loading && (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center">
-                {t("admin.claims.table.loading")}
-              </TableCell>
-            </TableRow>
-          )}
-          {!loading && error && (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center text-destructive">
-                {error}
-              </TableCell>
-            </TableRow>
-          )}
-          {!loading && !error && rows.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center h-24">
-                {t("admin.claims.table.empty")}
-              </TableCell>
-            </TableRow>
-          )}
-          {!loading && !error && rows.map((c) => (
-            <TableRow key={c.id} className="border-t">
-              <TableCell className="py-2">
-                <div className="flex items-center gap-2">
-                  <div className="size-8 rounded-full bg-muted" />
-                  <div>
-                    <div className="font-medium">{c.member.name}</div>
-                    <div className="text-xs text-muted-foreground">{c.member.id}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>{fmtDate(c.submittedAt)}</TableCell>
-              <TableCell>{c.flight.number} · {c.flight.route}</TableCell>
-              <TableCell className="font-medium text-emerald-600">
-                +{nf.format(c.milesRequested)}
-              </TableCell>
-              <TableCell><StatusBadge status={c.status} /></TableCell>
-              <TableCell className="text-right space-x-1">
-                <Button asChild variant="ghost" size="icon" title="View">
-                  <Link href={`/admin/claims/${c.id}`}><Eye className="h-4 w-4" /></Link>
-                </Button>
-                {c.status === "pending" && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      title="Approve"
-                      className="text-green-600 hover:text-green-700 hover:bg-green-100"
-                      onClick={() => approve(c.id)}
-                    >
-                      <CheckCircle className="h-4 w-4" />
+    <div className="p-6 bg-gray-50 min-h-[calc(100vh-64px)]">
+      <div className="mb-6">
+        <h1 className="text-2xl mb-2">{t("admin.claims.title")}</h1>
+        <p className="text-gray-600">{t("admin.claims.subtitle")}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Stat label={t("admin.claims.stats.pending")}     value={computed.pending}                     color="orange" />
+        <Stat label={t("admin.claims.stats.approved")}    value={computed.approved}                    color="green" />
+        <Stat label={t("admin.claims.stats.rejected")}    value={computed.rejected}                    color="red" />
+        <Stat label={t("admin.claims.stats.total_miles")} value={computed.totalMiles.toLocaleString()} color="blue" />
+      </div>
+
+      <div className="bg-white rounded-lg border p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg">{t("admin.claims.queue_title")}</h2>
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            {t("admin.claims.buttons.export")}
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <Input
+              placeholder={t("admin.claims.search_placeholder")}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Button variant="outline" className="flex items-center gap-2">
+            <Filter size={16} />
+            {/* bạn có thể thêm key i18n riêng cho "Filter" nếu muốn */}
+            Filter
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg border">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="border-b bg-gray-50">
+              <tr>
+                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.member")}</th>
+                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.time")}</th>
+                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.status")}</th>
+                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.actions")}</th>
+                <th className="text-center p-4 text-sm text-gray-600" />
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((r) => (
+                <tr key={r.id} className="border-b last:border-b-0 hover:bg-gray-50">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="text-xs bg-blue-100 text-blue-600">
+                          {r.avatarText}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{r.memberName}</p>
+                        <p className="text-sm text-gray-500">{r.summary}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-4">{r.date}</td>
+                  <td className="p-4">{statusBadge(r.status)}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onViewRequest(r.id)}
+                        className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        <Eye size={14} className="mr-1" />
+                        {t("admin.claims.buttons.view")}
+                      </Button>
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                      <MoreHorizontal size={16} />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      title="Reject"
-                      className="text-red-600 hover:text-red-700 hover:bg-red-100"
-                      onClick={() => reject(c.id)}
-                    >
-                      <XCircle className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td className="p-6 text-center text-sm text-muted-foreground" colSpan={5}>
+                    {t("admin.claims.empty")}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex items-center justify-between p-4 border-t">
+          <p className="text-sm text-gray-600">
+            {t("admin.claims.showing", { count: Math.min(filtered.length, 10), total: filtered.length })}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" disabled>
+              {t("admin.claims.buttons.prev")}
+            </Button>
+            <Button size="sm" className="bg-blue-600 text-white">1</Button>
+            <Button variant="outline" size="sm">2</Button>
+            <Button variant="outline" size="sm">3</Button>
+            <Button variant="outline" size="sm">
+              {t("admin.claims.buttons.next")}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

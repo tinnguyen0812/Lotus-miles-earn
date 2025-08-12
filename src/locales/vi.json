@@ -260,63 +260,63 @@
   "admin": {
     "claims": {
       "title": "Quản lý yêu cầu tích dặm thủ công",
-      "subtitle": "Xem xét và phê duyệt yêu cầu tích dặm của thành viên.",
-      "kpi": {
+      "subtitle": "Xem và xử lý các yêu cầu tích dặm thủ công từ thành viên",
+      "status": {
         "pending": "Chờ duyệt",
         "approved": "Đã duyệt",
         "rejected": "Từ chối",
-        "totalMiles": "Tổng dặm"
+        "total_miles": "Tổng dặm"
       },
-      "listTitle": "Yêu cầu chờ duyệt",
-      "listDesc": "Các yêu cầu dưới đây cần bạn xem xét.",
-      "filter": {
-        "search_placeholder": "Tìm tên / email / ID…",
-        "status": {
-          "pending": "Chờ duyệt",
-          "approved": "Đã duyệt",
-          "rejected": "Từ chối",
-          "all": "Tất cả"
-        }
-      },
+      "queue_title": "Yêu cầu đang chờ duyệt",
+      "search_placeholder": "Tìm kiếm theo tên thành viên…",
       "table": {
         "member": "Thành viên",
-        "submittedAt": "Ngày gửi",
-        "flight": "Chuyến bay",
-        "miles": "Dặm",
+        "time": "Thời gian",
         "status": "Trạng thái",
-        "actions": "Hành động",
-        "empty": "Không có dữ liệu",
-        "loading": "Đang tải…"
+        "actions": "Hành động"
       },
-      "toast": {
-        "approved": "Đã duyệt yêu cầu",
-        "rejected": "Đã từ chối yêu cầu"
+      "buttons": {
+        "export": "Xuất báo cáo",
+        "view": "Xem",
+        "prev": "Trước",
+        "next": "Sau"
       },
-      "error": {
-        "load": "Không tải được danh sách.",
-        "approve": "Duyệt thất bại.",
-        "reject": "Từ chối thất bại."
+      "empty": "Không có yêu cầu nào.",
+      "showing": "Hiển thị {count} / {total} kết quả",
+      "detail": {
+        "breadcrumb": "Duyệt yêu cầu tích dặm",
+        "title": "Thông tin yêu cầu • {{id}}",
+        "submittedAt": "Ngày gửi:",
+        "memberInfo": "Thông tin thành viên",
+        "fullName": "Họ và tên",
+        "memberCode": "Mã thành viên",
+        "phone": "Điện thoại",
+        "tier": "Hạng",
+        "tenure": "Đã tham gia",
+        "tenureValue": "{{months}} tháng",
+        "totalMiles": "Tổng dặm tích lũy",
+        "flightInfo": "Chi tiết chuyến bay",
+        "flightNo": "Mã chuyến bay",
+        "flightDate": "Ngày bay",
+        "route": "Tuyến đường",
+        "cabin": "Hạng ghế",
+        "distance": "Khoảng cách",
+        "noFlightInfo": "Không có thông tin chuyến bay",
+        "creditMiles": "Cộng dặm",
+        "milesUnit": "dặm",
+        "requestReason": "Lý do/ghi chú của thành viên",
+        "attachments": "Tệp đính kèm",
+        "download": "Tải xuống",
+        "actions": {
+          "approve": "✓ Duyệt yêu cầu",
+          "reject": "✗ Từ chối yêu cầu"
+        },
+        "rejectDialog": {
+          "title": "Nhập lý do từ chối",
+          "placeholder": "Vui lòng nêu rõ lý do từ chối...",
+          "confirm": "Từ chối"
+        }
       }
-    },
-    "detail": {
-      "loading": "Đang tải…",
-      "notFound": "Không tìm thấy yêu cầu.",
-      "back": "Quay lại",
-      "requestInfo": "Thông tin yêu cầu",
-      "requestId": "Mã yêu cầu",
-      "sentAt": "Ngày gửi",
-      "pointsLabel": "Số dặm yêu cầu",
-      "memberInfo": "Thông tin thành viên",
-      "currentMiles": "Số dặm hiện tại",
-      "flightInfo": "Chi tiết chuyến bay",
-      "date": "Ngày bay",
-      "distance": "Khoảng cách",
-      "reason": "Lý do yêu cầu",
-      "attachments": "Tệp đính kèm",
-      "download": "Tải xuống",
-      "noAttachments": "Không có tệp đính kèm",
-      "approve": "Duyệt yêu cầu",
-      "reject": "Từ chối yêu cầu"
     },
     "login": {
       "title": "Admin Portal",
@@ -339,10 +339,65 @@
     },
     "nav": {
       "dashboard": "Dashboard",
-      "claims": "Yêu cầu tích dặm",
+      "requests": "Yêu cầu tích dặm",
       "members": "Thành viên",
-      "rewards": "Phần thưởng",
-      "settings": "Cài đặt"
+      "transactions": "Phát thưởng",
+      "add_miles": "Cộng dặm",
+      "settings": "Cài đặt",
+      "help": "Hỗ trợ",
+      "logout": "Đăng xuất"
+    },
+    "addMiles": {
+      "title": "Ghi nhận giao dịch cộng dặm",
+      "subtitle": "Thêm dặm thưởng cho thành viên một cách thủ công",
+      "form": {
+        "sectionTitle": "Thông tin giao dịch",
+        "memberId": "Mã thành viên *",
+        "memberIdPh": "Nhập mã thành viên (VD: LM-106751)",
+        "miles": "Số dặm cộng *",
+        "milesPh": "Nhập số dặm",
+        "txnType": "Loại giao dịch *",
+        "txnTypePh": "Chọn loại giao dịch",
+        "notes": "Ghi chú",
+        "notesPh": "Nhập ghi chú (tuỳ chọn)",
+        "notesHint": "Ghi chú sẽ hiển thị trong lịch sử giao dịch của thành viên",
+        "save": "Lưu giao dịch",
+        "reset": "Đặt lại"
+      },
+      "types": {
+        "flight": "Chuyến bay",
+        "hotel": "Khách sạn",
+        "car": "Thuê xe",
+        "bonus": "Dặm thưởng",
+        "promo": "Khuyến mãi",
+        "comp": "Bù trừ",
+        "other": "Khác"
+      },
+      "summary": {
+        "title": "Tóm tắt giao dịch",
+        "member": "Thành viên",
+        "miles": "Số dặm",
+        "type": "Loại",
+        "empty": "Chưa có"
+      },
+      "recent": {
+        "title": "Giao dịch gần đây"
+      },
+      "toast": {
+        "invalidMilesTitle": "Số dặm không hợp lệ",
+        "invalidMilesDesc": "Số dặm phải là số dương.",
+        "successTitle": "Đã lưu",
+        "successDesc": "Đã cộng {{miles}} dặm cho {{member}}.",
+        "failedTitle": "Lưu không thành công"
+      },
+      "done": {
+        "title": "Giao dịch đã được lưu!",
+        "desc": "Đã cộng {{miles}} dặm vào tài khoản thành viên {{member}}",
+        "addAnother": "Tạo giao dịch khác"
+      }
+    },
+    "list": {
+      "view": "Xem"
     }
   }
 }

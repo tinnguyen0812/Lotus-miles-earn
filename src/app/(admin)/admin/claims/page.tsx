@@ -1,41 +1,25 @@
 "use client";
 
-import { ClaimsTable } from "@/components/admin/claims-table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import withAdminGuard from "@/components/auth/withAdminGuard";
-import { useTranslation } from "@/lib/i18n";
+import { useRouter } from "next/navigation";
+import AdminRequestsDashboard, {
+  type AdminClaimRow,
+} from "@/components/admin/claims-table";
 
-function AdminClaimsPage() {
-  const { t } = useTranslation();
+export default function AdminClaimsPage() {
+  const router = useRouter();
+
+  // TODO: gọi API thật & map về AdminClaimRow[]
+  // const { data } = useSWR(...)
+
+  const handleView = (id: string) => {
+    // Điều hướng sang màn chi tiết — giữ đường dẫn bạn đang dùng
+    router.push(`/admin/claims/${id}`);
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          {t("admin.claims.title")}
-        </h1>
-        <p className="text-muted-foreground">
-          {t("admin.claims.subtitle")}
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.claims.listTitle")}</CardTitle>
-          <CardDescription>{t("admin.claims.listDesc")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ClaimsTable />
-        </CardContent>
-      </Card>
-    </div>
+    <AdminRequestsDashboard
+      onViewRequest={handleView}
+      // rows={data} // <- bật khi có API
+    />
   );
 }
-
-export default withAdminGuard(AdminClaimsPage);

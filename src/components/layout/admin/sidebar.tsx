@@ -2,74 +2,114 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "../../logo"; // hoặc "./Logo" nếu bạn đang để chung
 import {
-  SidebarHeader, SidebarContent, SidebarFooter,
-  SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarRail,
-} from "@/components/ui/sidebar";
-import { LayoutDashboard, ListChecks, Users, Gift, Settings } from "lucide-react";
-import { cn } from "@/lib/utils";
+  LayoutDashboard,
+  FileText,
+  Users,
+  CreditCard,
+  PlusCircle,
+  Settings,
+  HelpCircle,
+  LogOut
+} from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { cn } from "@/lib/utils"; // (nếu bạn có helper cn); nếu không, thay bằng template string
+import { useRouter } from "next/navigation";
+type Item = {
+  href: string;
+  id: keyof typeof navKeys;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
 
-const NAV = [
-  { href: "/admin",          key: "admin.nav.dashboard", icon: LayoutDashboard },
-  { href: "/admin/claims",   key: "admin.nav.claims",    icon: ListChecks },
-  { href: "/admin/members",  key: "admin.nav.members",   icon: Users },
-  { href: "/admin/rewards",  key: "admin.nav.rewards",   icon: Gift },
-  { href: "/admin/settings", key: "admin.nav.settings",  icon: Settings },
-];
+const navKeys = {
+  dashboard: "admin.nav.dashboard",
+  requests: "admin.nav.requests",
+  members: "admin.nav.members",
+  transactions: "admin.nav.transactions",
+  add_miles: "admin.nav.add_miles",
+  settings: "admin.nav.settings",
+  help: "admin.nav.help",
+  logout: "admin.nav.logout"
+} as const;
 
-export function AdminSidebar() {
+export default function AdminSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const router = useRouter();
+const handleLogout = () => {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+    } catch {}
+    router.replace("/admin/login");
+  };
+  const menu: Item[] = [
+    { href: "/admin/dashboard",  id: "dashboard",   icon: LayoutDashboard },
+    { href: "/admin/claims",     id: "requests",    icon: FileText },
+    { href: "/admin/members",    id: "members",     icon: Users },
+    { href: "/admin/rewards",    id: "transactions",icon: CreditCard },
+    { href: "/admin/add-miles",  id: "add_miles",   icon: PlusCircle }
+  ];
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+  const bottom: Item[] = [
+    { href: "/admin/settings", id: "settings", icon: Settings },
+    { href: "/admin/help",     id: "help",     icon: HelpCircle }
+  ];
 
   return (
-    <>
-      <SidebarHeader className="px-4 py-3">
+    <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 flex flex-col">
+      {/* Brand */}
+      <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="grid size-9 place-items-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
-            <span className="text-primary text-xs font-bold">LM</span>
-          </div>
-          <div className="leading-tight">
-            <div className="font-semibold text-base">LotusMiles</div>
-            <div className="text-xs text-muted-foreground">Admin Portal</div>
-          </div>
+          <Logo size="xs" />
         </div>
-      </SidebarHeader>
+        <p className="text-xs text-gray-500 mt-1">{t("admin.brand")}</p>
+      </div>
 
-      <SidebarContent>
-        <SidebarMenu>
-          {NAV.map(({ href, key, icon: Icon }) => {
-            const active = isActive(href);
-            return (
-              <SidebarMenuItem key={href}>
-                <SidebarMenuButton asChild isActive={active}>
-                  <Link
-                    href={href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm",
-                      active
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    )}
-                  >
-                    <Icon className={active ? "h-4 w-4 text-primary" : "h-4 w-4"} />
-                    <span className="font-medium">{t(key)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
-        </SidebarMenu>
-      </SidebarContent>
+      {/* Main nav */}
+      <nav className="flex-1 p-3 space-y-1">
+        {menu.map(({ href, id, icon: Icon }) => {
+          const active = pathname === href || pathname?.startsWith(href + "/");
+          return (
+            <Link
+              key={id}
+              href={href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                active
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-gray-700 hover:bg-gray-50"
+              )}
+            >
+              <Icon className="h-5 w-5" />
+              <span>{t(navKeys[id])}</span>
+            </Link>
+          );
+        })}
+      </nav>
 
-      <SidebarFooter className="px-4 py-3 text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Lotus Loyalty Center
-      </SidebarFooter>
+      {/* Bottom links + logout */}
+      <div className="p-3 border-t border-gray-200 space-y-1">
+        {bottom.map(({ href, id, icon: Icon }) => (
+          <Link
+            key={id}
+            href={href}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <Icon className="h-5 w-5" />
+            <span>{t(navKeys[id])}</span>
+          </Link>
+        ))}
 
-      <SidebarRail />
-    </>
+        <button
+          onClick={handleLogout}
+          className="mt-2 flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50"
+        >
+          <LogOut className="h-5 w-5" />
+          <span>{t(navKeys.logout)}</span>
+        </button>
+      </div>
+    </aside>
   );
 }

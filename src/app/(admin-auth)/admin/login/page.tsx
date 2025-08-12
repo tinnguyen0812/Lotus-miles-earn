@@ -27,50 +27,62 @@ export default function AdminLoginPage() {
   const [error, setError] = React.useState<string>("");
   const [showPw, setShowPw] = React.useState(false);
   const [remember, setRemember] = React.useState(true);
-
+  type AdminSignInResponse = {
+    success: boolean;
+    data?: {
+      access_token: string;
+      refresh_token?: string;
+      user_id?: string;
+    };
+    timestamp?: string;
+  };
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     const form = e.target as HTMLFormElement;
-    const email = (new FormData(form).get("email") as string)?.trim();
-    const password = (new FormData(form).get("password") as string) ?? "";
+    const fd = new FormData(form);
+    const email = String(fd.get("email") || "").trim();
+    const password = String(fd.get("password") || "");
 
     try {
-      const resp = await callApi<{ token: string; role: "admin" | "member" }>(
-        { method: "POST", path: "/api/admin/auth/login", body: { email, password } }
-      );
+      const resp = await callApi<AdminSignInResponse>({
+        method: "POST",
+        path: "/ms-auth/admin-portal/sign-in",
+        body: { email, password },
+      });
 
-      if (resp.role !== "admin") {
-        setError(t("admin.login.noPermission") || "This account is not allowed to access Admin Portal.");
-        toast({
-          title: t("admin.login.failed") || "Login failed",
-          description: t("admin.login.noPermission") || "This account is not allowed to access Admin Portal.",
-          variant: "destructive",
-        });
-        return;
+      const token = resp?.data?.access_token;
+      if (!token) {
+        throw new Error("Invalid response: missing access_token");
       }
 
-      // Lưu token: nhớ đăng nhập -> localStorage, còn không -> sessionStorage
-      const store = remember ? localStorage : sessionStorage;
-      store.setItem("token", resp.token);
-      store.setItem("role", resp.role);
+      // Lưu token & refresh token (nếu có) + gán role admin
+      localStorage.setItem("token", token);
+      if (resp.data?.refresh_token) {
+        localStorage.setItem("refresh_token", resp.data.refresh_token);
+      }
+      localStorage.setItem("role", "admin");
 
       toast({
-        title: t("admin.login.successTitle") || "Welcome",
-        description: t("admin.login.successDesc") || "You are now signed in as admin.",
+        title: t("admin.login.success") || "Signed in",
+        description: t("admin.login.welcome") || "Welcome to Admin Portal",
       });
 
       router.push("/admin/claims");
     } catch (err: any) {
-      const msg =
+      const message =
         err?.message?.includes("403")
           ? (t("admin.login.invalid") || "Invalid email or password.")
-          : (t("admin.login.error") || "Unexpected error. Please try again.");
-      setError(msg);
-      toast({ title: t("admin.login.failed") || "Login failed", description: msg, variant: "destructive" });
-      console.error(err);
+          : (t("admin.login.unexpected") || "Unexpected error. Please try again.");
+      setError(message);
+      toast({
+        title: t("admin.login.failed") || "Login failed",
+        description: message,
+        variant: "destructive",
+      });
+      console.error("Admin login error:", err);
     } finally {
       setLoading(false);
     }
