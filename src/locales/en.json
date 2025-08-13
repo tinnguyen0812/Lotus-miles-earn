@@ -5,7 +5,11 @@
     "lang": {
       "en": "English",
       "vi": "Vietnamese"
-    }
+    },
+    "detail": "Detail",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "header": {
     "title": "Welcome, Member"
@@ -31,66 +35,288 @@
       "pending_claims": "Pending Claims"
     }
   },
+  "member": {
+    "app_name": "Lotus Loyalty Hub",
+    "nav": {
+      "home": "Home",
+      "history": "Earning history",
+      "manual_request": "Manual mileage claim",
+      "request_tracking": "Request tracking",
+      "account_info": "Account info",
+      "logout": "Log out"
+    },
+    "user": {
+      "name": "Member",
+      "email": "member@vietnamair.com",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Log Out"
+    },
+    "tier": {
+      "platinum": "Platinum",
+      "gold": "Gold",
+      "silver": "Silver",
+      "member": "Member"
+    },
+    "dashboard": {
+      "welcome": "Welcome back, {{name}}",
+      "total_miles": "Total miles",
+      "accumulated_since_join": "Accumulated since joining",
+      "miles_this_year": "Miles this year",
+      "from_date": "Since {{date}}",
+      "upgrade_progress": "Upgrade progress",
+      "miles_remaining": "{{count}} miles to next tier",
+      "recent_activity": "Recent activity",
+      "activity": {
+        "flight": "Flight {{route}}",
+        "partner_purchase": "Partner purchase",
+        "manual_claim": "Manual mileage claim",
+        "processing": "Processing",
+        "miles_plus": "+{{count}} miles"
+      }
+    },
+    "claim": {
+      "title": "Submit manual miles request",
+      "subtitle": "Send a request for flights or transactions that didn't earn miles automatically.",
+      "section": {
+        "info": "Request details"
+      },
+      "fields": {
+        "request_type": "Request type",
+        "flight_no": "Flight number",
+        "route": "Route",
+        "flight_date": "Flight date",
+        "expected_miles": "Expected miles",
+        "booking_ref": "Booking reference / Invoice number",
+        "ticket_no": "Ticket / Reference number",
+        "description": "Description",
+        "attachments": "Supporting documents"
+      },
+      "placeholders": {
+        "request_type": "Select a request type",
+        "flight_no": "e.g. VN210",
+        "booking_ref": "ABC123 or invoice number",
+        "ticket_no": "Ticket number or reference",
+        "description": "Please describe your transaction in detail..."
+      },
+      "types": {
+        "missing_flight": "Missing flight miles",
+        "partner_purchase": "Partner purchase",
+        "credit_card": "Credit card payment",
+        "hotel_stay": "Hotel stay",
+        "other": "Other"
+      },
+      "upload": {
+        "hint": "Drag & drop files here or click to choose",
+        "types": "Supported: PDF, JPG, PNG, DOC (up to 10MB each)",
+        "choose": "Choose files",
+        "added": "Attached files"
+      },
+      "submit": "Submit request",
+      "notes": {
+        "title": "Important notes",
+        "n1": "Requests must be submitted within 6 months from the transaction date.",
+        "n2": "Please attach sufficient documents: boarding pass, invoice, payment receipt.",
+        "n3": "Processing time: 3–5 business days.",
+        "n4": "You can track the processing status in the Request tracking page."
+      },
+      "toast": {
+        "added_files_title": "Files added",
+        "added_files_desc": "{{count}} file(s) added.",
+        "removed_file_title": "File removed",
+        "submitted_title": "Request submitted",
+        "submitted_desc": "We’ll review it within 3–5 business days."
+      }
+    },
+    "rewards": {
+      "title": "Rewards",
+      "placeholder": "Rewards content coming soon."
+    },
+    "account": {
+      "title": "Account information",
+      "subtitle": "Manage your personal information and account settings",
+      "status": {
+        "title": "Membership status",
+        "total": "Total accumulated miles",
+        "this_year": "Miles this year",
+        "to_next": "Miles to next tier"
+      },
+      "benefits": {
+        "title": "Benefits for {{tier}}",
+        "platinum": [
+          "Priority check-in",
+          "Complimentary lounge",
+          "Complimentary upgrade",
+          "Extra 40kg baggage"
+        ],
+        "gold": [
+          "Priority check-in",
+          "Discounted lounge access",
+          "Extra 20kg baggage",
+          "50% bonus miles"
+        ],
+        "silver": [
+          "Priority online check-in",
+          "Extra 10kg baggage",
+          "25% bonus miles"
+        ],
+        "basic": [
+          "Base earning",
+          "Special offers"
+        ]
+      },
+      "personal": {
+        "title": "Personal information",
+        "name": "Full name",
+        "phone": "Phone number",
+        "dob": "Date of birth",
+        "address": "Address",
+        "email_note": "Email cannot be changed"
+      },
+      "security": {
+        "title": "Security",
+        "change_password": {
+          "title": "Change password",
+          "subtitle": "Update your password to keep your account secure",
+          "cta": "Change password"
+        },
+        "mfa": {
+          "title": "Two-factor authentication",
+          "subtitle": "Add extra protection for your account",
+          "cta": "Enable"
+        }
+      }
+    },
+    "claims_table": {
+      "claim_id": "Claim ID",
+      "flight": "Flight",
+      "date": "Date",
+      "status": "Status",
+      "miles": "Miles",
+      "no_claims": "No claims found."
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "history": {
+      "title": "Earning history",
+      "subtitle": "Track all of your miles earning transactions",
+      "recent_transactions": "Recent transactions",
+      "columns": {
+        "type": "Type",
+        "description": "Description",
+        "date": "Date",
+        "miles": "Miles",
+        "status": "Status"
+      },
+      "type": {
+        "flight": "Flight",
+        "partner": "Partner",
+        "manual": "Manual claim",
+        "bonus": "Bonus"
+      },
+      "status": {
+        "completed": "Credited",
+        "pending": "Processing",
+        "rejected": "Rejected"
+      },
+      "summary": {
+        "this_month": "Total miles this month",
+        "completed": "Completed transactions",
+        "pending": "Pending transactions"
+      }
+    },
+    "requests": {
+      "title": "Request tracking",
+      "subtitle": "Track the status of your manual mileage requests",
+      "create": "Create new request",
+      "create_first": "Create your first request",
+      "submitted_on": "Submitted on",
+      "expected": "Expected miles",
+      "actual": "Actual miles",
+      "processing_notes": "Processing notes",
+      "rejection_reason": "Rejection reason",
+      "status": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "approved": "Credited",
+        "rejected": "Rejected"
+      },
+      "type": {
+        "missing-flight": "Missing flight miles",
+        "partner-purchase": "Partner purchase",
+        "hotel-stay": "Hotel stay",
+        "credit-card": "Credit card",
+        "other": "Other"
+      },
+      "empty": {
+        "title": "No requests yet",
+        "subtitle": "You haven't submitted any manual mileage requests"
+      }
+    }
+  },
   "admin": {
     "claims": {
-      "title": "Manual mileage claims",
-      "subtitle": "Review and approve member mileage claims.",
-      "listTitle": "Pending claims",
-      "listDesc": "The following claims require your review.",
-      "kpi": {
+      "title": "Manual mileage claims management",
+      "subtitle": "Review and approve manual mileage claims from members",
+      "status": {
         "pending": "Pending",
         "approved": "Approved",
         "rejected": "Rejected",
-        "totalMiles": "Total miles"
+        "total_miles": "Total miles"
       },
-      "filter": {
-        "search_placeholder": "Search name / email / ID…",
-        "status": {
-          "pending": "Pending",
-          "approved": "Approved",
-          "rejected": "Rejected",
-          "all": "All"
-        }
-      },
+      "queue_title": "Pending claims",
+      "search_placeholder": "Search by member name…",
       "table": {
         "member": "Member",
-        "submittedAt": "Submitted",
-        "flight": "Flight",
-        "miles": "Miles",
+        "time": "Submitted",
         "status": "Status",
-        "actions": "Actions",
-        "empty": "No data",
-        "loading": "Loading…"
+        "actions": "Actions"
       },
-      "toast": {
-        "approved": "Claim approved",
-        "rejected": "Claim rejected"
+      "buttons": {
+        "export": "Export report",
+        "view": "View",
+        "prev": "Prev",
+        "next": "Next"
       },
-      "error": {
-        "load": "Failed to load claims.",
-        "approve": "Approve failed.",
-        "reject": "Reject failed."
+      "empty": "No requests.",
+      "showing": "Showing {count} / {total} results",
+      "detail": {
+        "breadcrumb": "Review manual claim",
+        "title": "Request details • {{id}}",
+        "submittedAt": "Submitted:",
+        "memberInfo": "Member information",
+        "fullName": "Full name",
+        "memberCode": "Member code",
+        "phone": "Phone",
+        "tier": "Tier",
+        "tenure": "Joined",
+        "tenureValue": "{{months}} months",
+        "totalMiles": "Total accumulated miles",
+        "flightInfo": "Flight details",
+        "flightNo": "Flight number",
+        "flightDate": "Flight date",
+        "route": "Route",
+        "cabin": "Cabin",
+        "distance": "Distance",
+        "noFlightInfo": "No flight information",
+        "creditMiles": "Credit miles",
+        "milesUnit": "miles",
+        "requestReason": "Member’s note / Reason",
+        "attachments": "Attachments",
+        "download": "Download",
+        "actions": {
+          "approve": "Approve request",
+          "reject": "Reject request"
+        },
+        "rejectDialog": {
+          "title": "Reason for rejection",
+          "placeholder": "Please provide a clear reason for rejection...",
+          "confirm": "Reject"
+        }
       }
-    },
-    "detail": {
-      "loading": "Loading…",
-      "notFound": "Claim not found.",
-      "back": "Back",
-      "requestInfo": "Request information",
-      "requestId": "Request ID",
-      "sentAt": "Submitted",
-      "pointsLabel": "Requested miles",
-      "memberInfo": "Member info",
-      "currentMiles": "Current miles",
-      "flightInfo": "Flight info",
-      "date": "Date",
-      "distance": "Distance",
-      "reason": "Reason",
-      "attachments": "Attachments",
-      "download": "Download",
-      "noAttachments": "No attachments",
-      "approve": "Approve claim",
-      "reject": "Reject claim"
     },
     "login": {
       "title": "Admin Portal",
@@ -113,10 +339,65 @@
     },
     "nav": {
       "dashboard": "Dashboard",
-      "claims": "Manual mileage claims",
+      "requests": "Manual mileage claims",
       "members": "Members",
-      "rewards": "Rewards",
-      "settings": "Settings"
+      "transactions": "Rewards",
+      "add_miles": "Credit miles",
+      "settings": "Settings",
+      "help": "Help",
+      "logout": "Log out"
+    },
+    "addMiles": {
+      "title": "Record manual mileage credit",
+      "subtitle": "Add bonus miles to a member manually",
+      "form": {
+        "sectionTitle": "Transaction details",
+        "memberId": "Member ID *",
+        "memberIdPh": "Enter member ID (e.g. LM-106751)",
+        "miles": "Miles to add *",
+        "milesPh": "Enter miles",
+        "txnType": "Transaction type *",
+        "txnTypePh": "Choose type",
+        "notes": "Notes",
+        "notesPh": "Optional notes for this transaction",
+        "notesHint": "Notes will show up in the member's activity history",
+        "save": "Save transaction",
+        "reset": "Reset"
+      },
+      "types": {
+        "flight": "Flight",
+        "hotel": "Hotel",
+        "car": "Car rental",
+        "bonus": "Bonus miles",
+        "promo": "Promotion",
+        "comp": "Compensation",
+        "other": "Other"
+      },
+      "summary": {
+        "title": "Summary",
+        "member": "Member",
+        "miles": "Miles",
+        "type": "Type",
+        "empty": "Not set"
+      },
+      "recent": {
+        "title": "Recent transactions"
+      },
+      "toast": {
+        "invalidMilesTitle": "Invalid miles",
+        "invalidMilesDesc": "Miles must be a positive number.",
+        "successTitle": "Saved",
+        "successDesc": "Added {{miles}} miles to {{member}}.",
+        "failedTitle": "Failed to save"
+      },
+      "done": {
+        "title": "Transaction saved!",
+        "desc": "Added {{miles}} miles to member {{member}}",
+        "addAnother": "Add another"
+      }
+    },
+    "list": {
+      "view": "View"
     }
   }
 }

@@ -1,33 +1,27 @@
 "use client";
 
+import * as React from "react";
 import withMemberGuard from "@/components/auth/withMemberGuard";
-import { ClaimsHistory } from "@/components/dashboard/claims-history";
-import { StatsCards } from "@/components/dashboard/stats-cards";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
+import { MemberDashboard, type MemberInfo } from "@/components/member/cards/SummaryCard";
 
+// TODO: Khi có API profile, lấy dữ liệu thực thay cho mock dưới đây.
 function DashboardPage() {
+  // Mock demo để xem UI. Thay bằng dữ liệu thật từ API/decoded token khi sẵn sàng.
+  const memberInfo = React.useMemo<MemberInfo>(
+    () => ({
+      name: "Nguyễn Văn An",
+      email: "tin.nguyenba1803@gmail.com",
+      membershipTier: "Gold",      // "Platinum" | "Gold" | "Silver" | "Member"
+      totalMiles: 45750,
+      milesThisYear: 12500,
+      nextTierMiles: 25000,        // mốc cần để lên hạng kế tiếp
+    }),
+    []
+  );
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome Back!</h1>
-          <p className="text-muted-foreground">
-            Here&apos;s a summary of your loyalty account.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/member/claim-miles">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Claim New Miles
-          </Link>
-        </Button>
-      </div>
-
-      <StatsCards />
-
-      <ClaimsHistory />
+      <MemberDashboard memberInfo={memberInfo} />
     </div>
   );
 }
