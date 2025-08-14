@@ -12,7 +12,8 @@
     "detail": "Chi tiết",
     "edit": "Chỉnh sửa",
     "cancel": "Hủy",
-    "save": "Lưu thay đổi"
+    "save": "Lưu thay đổi",
+    "miles":"Dặm"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -255,6 +256,58 @@
         "title": "Chưa có yêu cầu nào",
         "subtitle": "Bạn chưa gửi yêu cầu tích dặm thủ công nào"
       }
+    },
+    "requestDetail": {
+      "title": "Chi tiết yêu cầu #{{id}}",
+      "subtitle": "Thông tin chi tiết về yêu cầu tích dặm của bạn",
+      "submittedOn": "Ngày gửi: {{date}}",
+      "status": {
+        "pending": "Đang chờ",
+        "processing": "Đang xử lý",
+        "approved": "Đã cộng",
+        "rejected": "Từ chối",
+        "unknown": "Không xác định"
+      },
+      "statusMsg": {
+        "processing": "Yêu cầu của bạn đang được xem xét và xử lý",
+        "approved": "Yêu cầu đã được duyệt. {{miles}} dặm đã được cộng vào tài khoản",
+        "rejected": "Yêu cầu đã bị từ chối. Vui lòng xem lý do bên dưới"
+      },
+      "info": {
+        "title": "Thông tin yêu cầu",
+        "type": "Loại yêu cầu",
+        "description": "Thông tin chi tiết",
+        "expectedMiles": "Số dặm dự kiến",
+        "actualMiles": "Số dặm thực tế"
+      },
+      "feedback": {
+        "title": "Phản hồi từ hệ thống",
+        "processing": "Yêu cầu đang được xử lý",
+        "sla": "Chúng tôi sẽ xem xét và phản hồi trong vòng 3–5 ngày làm việc",
+        "adminNote": "Ghi chú từ quản trị viên",
+        "rejectionReason": "Lý do từ chối",
+        "rejectionHint": "💡 Gợi ý: Bạn có thể gửi yêu cầu mới với thông tin chính xác hoặc liên hệ bộ phận hỗ trợ để được tư vấn thêm."
+      },
+      "attachments": {
+        "title": "Tài liệu đính kèm ({{count}})"
+      },
+      "actions": {
+        "backToList": "Quay lại danh sách yêu cầu",
+        "contactSupport": "Liên hệ hỗ trợ"
+      },
+      "fields": {
+        "flightNumber": "Số hiệu chuyến bay",
+        "departureDate": "Ngày đi",
+        "arrivalDate": "Ngày đến",
+        "bookingReference": "Mã đặt chỗ",
+        "merchant": "Đối tác",
+        "transactionDate": "Ngày giao dịch",
+        "amount": "Số tiền",
+        "receiptNumber": "Số hóa đơn",
+        "hotelName": "Khách sạn",
+        "checkInDate": "Ngày nhận phòng",
+        "checkOutDate": "Ngày trả phòng"
+      }
     }
   },
   "admin": {
@@ -331,7 +384,7 @@
       "invalid": "Sai email hoặc mật khẩu.",
       "noPermission": "Tài khoản này không có quyền truy cập Admin Portal.",
       "error": "Có lỗi xảy ra, vui lòng thử lại.",
-      "successTitle": "Xin chào",
+      "success": "Xin chào",
       "successDesc": "Bạn đã đăng nhập với quyền admin.",
       "needHelp": "Cần hỗ trợ?",
       "contactIT": "Liên hệ IT Support",
@@ -398,6 +451,129 @@
     },
     "list": {
       "view": "Xem"
+    },
+    "members": {
+      "title": "Quản lý Thành viên",
+      "subtitle": "Xem và quản lý danh sách tất cả thành viên trong hệ thống",
+      "miles": "dặm",
+      "stats": {
+        "total": "Tổng thành viên",
+        "newThisMonth": "Thành viên mới (tháng)"
+      },
+      "list": {
+        "title": "Danh sách thành viên",
+        "export": "Xuất Excel",
+        "add": "Thêm thành viên",
+        "searchPlaceholder": "Tìm kiếm theo tên, email hoặc ID...",
+        "filterTier": "Lọc theo hạng"
+      },
+      "table": {
+        "member": "THÀNH VIÊN",
+        "memberId": "ID THÀNH VIÊN",
+        "tier": "HẠNG",
+        "totalMiles": "TỔNG DẶM",
+        "joinDate": "NGÀY THAM GIA",
+        "status": "TRẠNG THÁI",
+        "actions": "HÀNH ĐỘNG",
+        "showing": "Hiển thị {count} trong tổng số {total} thành viên"
+      },
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Tạm khóa"
+      },
+      "pager": {
+        "prev": "Trước",
+        "next": "Sau"
+      }
+    },
+    "rewards": {
+      "title": "Quản lý Phát thưởng",
+      "subtitle": "Tạo và quản lý các chương trình thưởng, khuyến mãi cho thành viên",
+      "stats": {
+        "running": "Chương trình đang chạy",
+        "budget": "Tổng ngân sách",
+        "participants": "Thành viên tham gia",
+        "milesIssued": "Dặm đã phát"
+      },
+      "list": {
+        "title": "Danh sách chương trình thưởng",
+        "create": "Tạo chương trình mới",
+        "searchPlaceholder": "Tìm kiếm chương trình thưởng...",
+        "filterStatus": "Lọc theo trạng thái"
+      },
+      "status": {
+        "running": "Đang chạy",
+        "expired": "Hết hạn",
+        "scheduled": "Đã lên lịch"
+      },
+      "cards": {
+        "participants": "Tham gia",
+        "budget": "Ngân sách",
+        "view": "Xem chi tiết",
+        "edit": "Chỉnh sửa"
+      },
+      "quick": {
+        "newPromo": {
+          "title": "Tạo khuyến mãi mới",
+          "subtitle": "Tạo chương trình khuyến mãi theo mùa"
+        },
+        "manualBonus": {
+          "title": "Phát thưởng thủ công",
+          "subtitle": "Tặng dặm cho nhóm thành viên"
+        },
+        "schedule": {
+          "title": "Lên lịch khuyến mãi",
+          "subtitle": "Đặt lịch cho các sự kiện đặc biệt"
+        }
+      }
+    },
+    "brand": "Cổng quản trị",
+    "language": {
+      "current": "Ngôn ngữ: {{lang}}",
+      "en": "Tiếng Anh",
+      "vi": "Tiếng Việt"
+    },
+    "dashboard": {
+      "title": "Dashboard Tổng quan",
+      "subtitle": "Theo dõi tình hình yêu cầu tích dặm thủ công",
+      "requests_overview": "Tổng quan yêu cầu",
+      "status": {
+        "pending": "Đang chờ xử lý",
+        "approved": "Đã được duyệt",
+        "rejected": "Đã từ chối",
+        "change_day": "{{value}} từ hôm qua",
+        "change_week": "{{value}} tuần này"
+      },
+      "cta": {
+        "title": "Quản lý yêu cầu tích dặm",
+        "desc": "Có {{count}} yêu cầu đang chờ xử lý. Hãy xem xét và duyệt để đảm bảo trải nghiệm tốt cho thành viên.",
+        "button": "Xem tất cả yêu cầu"
+      },
+      "activity": {
+        "title": "Thống kê hoạt động (7 ngày gần nhất)",
+        "new_requests": "Yêu cầu mới",
+        "processed": "Đã xử lý"
+      },
+      "processing": {
+        "title": "Tốc độ xử lý yêu cầu (%)",
+        "avg_efficiency": "Hiệu suất xử lý trung bình:"
+      },
+      "members": {
+        "title": "Thống kê thành viên",
+        "total": "Tổng số thành viên",
+        "new_count": "{{value}} thành viên mới",
+        "credited_this_month": "Dặm đã cộng tháng này",
+        "vs_last_month": "{{value}} so với tháng trước"
+      },
+      "weekday": {
+        "mon_short": "T2",
+        "tue_short": "T3",
+        "wed_short": "T4",
+        "thu_short": "T5",
+        "fri_short": "T6",
+        "sat_short": "T7",
+        "sun_short": "CN"
+      }
     }
   }
 }

@@ -9,7 +9,8 @@
     "detail": "Detail",
     "edit": "Edit",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "miles":"Miles"
   },
   "header": {
     "title": "Welcome, Member"
@@ -255,6 +256,58 @@
         "title": "No requests yet",
         "subtitle": "You haven't submitted any manual mileage requests"
       }
+    },
+    "requestDetail": {
+      "title": "Request details #{{id}}",
+      "subtitle": "Detailed information about your manual mileage request",
+      "submittedOn": "Submitted on: {{date}}",
+      "status": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "unknown": "Unknown"
+      },
+      "statusMsg": {
+        "processing": "Your request is being reviewed and processed",
+        "approved": "Your request has been approved. {{miles}} miles have been credited to your account",
+        "rejected": "Your request has been rejected. Please see the reason below"
+      },
+      "info": {
+        "title": "Request information",
+        "type": "Request type",
+        "description": "Details",
+        "expectedMiles": "Expected miles",
+        "actualMiles": "Actual miles"
+      },
+      "feedback": {
+        "title": "System feedback",
+        "processing": "The request is being processed",
+        "sla": "We will review and respond within 3–5 business days",
+        "adminNote": "Administrator note",
+        "rejectionReason": "Rejection reason",
+        "rejectionHint": "💡 Tip: You can submit a new request with accurate information or contact support for more assistance."
+      },
+      "attachments": {
+        "title": "Attachments ({{count}})"
+      },
+      "actions": {
+        "backToList": "Back to requests",
+        "contactSupport": "Contact support"
+      },
+      "fields": {
+        "flightNumber": "Flight number",
+        "departureDate": "Departure date",
+        "arrivalDate": "Arrival date",
+        "bookingReference": "Booking reference",
+        "merchant": "Merchant",
+        "transactionDate": "Transaction date",
+        "amount": "Amount",
+        "receiptNumber": "Receipt number",
+        "hotelName": "Hotel",
+        "checkInDate": "Check-in date",
+        "checkOutDate": "Check-out date"
+      }
     }
   },
   "admin": {
@@ -262,6 +315,12 @@
       "title": "Manual mileage claims management",
       "subtitle": "Review and approve manual mileage claims from members",
       "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "total_miles": "Total miles"
+      },
+      "stats": {
         "pending": "Pending",
         "approved": "Approved",
         "rejected": "Rejected",
@@ -331,7 +390,7 @@
       "invalid": "Invalid email or password.",
       "noPermission": "This account is not allowed to access Admin Portal.",
       "error": "Unexpected error. Please try again.",
-      "successTitle": "Welcome",
+      "success": "Welcome",
       "successDesc": "You are now signed in as admin.",
       "needHelp": "Need help?",
       "contactIT": "Contact IT Support",
@@ -398,6 +457,129 @@
     },
     "list": {
       "view": "View"
+    },
+    "members": {
+      "title": "Member Management",
+      "subtitle": "View and manage all members in the system",
+      "miles": "miles",
+      "stats": {
+        "total": "Total members",
+        "newThisMonth": "New this month"
+      },
+      "list": {
+        "title": "Member list",
+        "export": "Export Excel",
+        "add": "Add member",
+        "searchPlaceholder": "Search by name, email or ID...",
+        "filterTier": "Filter by tier"
+      },
+      "table": {
+        "member": "MEMBER",
+        "memberId": "MEMBER ID",
+        "tier": "TIER",
+        "totalMiles": "TOTAL MILES",
+        "joinDate": "JOIN DATE",
+        "status": "STATUS",
+        "actions": "ACTIONS",
+        "showing": "Showing {count} of {total} members"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "pager": {
+        "prev": "Previous",
+        "next": "Next"
+      }
+    },
+    "rewards": {
+      "title": "Reward Management",
+      "subtitle": "Create and manage reward and promotion programs",
+      "stats": {
+        "running": "Programs running",
+        "budget": "Total budget",
+        "participants": "Participants",
+        "milesIssued": "Miles issued"
+      },
+      "list": {
+        "title": "Reward programs",
+        "create": "Create program",
+        "searchPlaceholder": "Search reward program...",
+        "filterStatus": "Filter by status"
+      },
+      "status": {
+        "running": "Running",
+        "expired": "Expired",
+        "scheduled": "Scheduled"
+      },
+      "cards": {
+        "participants": "Participants",
+        "budget": "Budget",
+        "view": "View details",
+        "edit": "Edit"
+      },
+      "quick": {
+        "newPromo": {
+          "title": "Create new promo",
+          "subtitle": "Seasonal promotion"
+        },
+        "manualBonus": {
+          "title": "Manual bonus",
+          "subtitle": "Grant miles to a member group"
+        },
+        "schedule": {
+          "title": "Schedule promotions",
+          "subtitle": "Plan special events"
+        }
+      }
+    },
+    "brand": "Admin Portal",
+    "language": {
+      "current": "Language: {{lang}}",
+      "en": "English",
+      "vi": "Vietnamese"
+    },
+    "dashboard": {
+      "title": "Overview Dashboard",
+      "subtitle": "Monitor the status of manual mileage requests",
+      "requests_overview": "Requests overview",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "change_day": "{{value}} since yesterday",
+        "change_week": "{{value}} this week"
+      },
+      "cta": {
+        "title": "Manual mileage requests",
+        "desc": "There are {{count}} requests waiting for review. Please check and approve to ensure a great member experience.",
+        "button": "View all requests"
+      },
+      "activity": {
+        "title": "Activity overview (last 7 days)",
+        "new_requests": "New requests",
+        "processed": "Processed"
+      },
+      "processing": {
+        "title": "Processing speed (%)",
+        "avg_efficiency": "Average efficiency:"
+      },
+      "members": {
+        "title": "Member statistics",
+        "total": "Total members",
+        "new_count": "{{value}} new members",
+        "credited_this_month": "Miles credited this month",
+        "vs_last_month": "{{value}} vs last month"
+      },
+      "weekday": {
+        "mon_short": "Mon",
+        "tue_short": "Tue",
+        "wed_short": "Wed",
+        "thu_short": "Thu",
+        "fri_short": "Fri",
+        "sat_short": "Sat",
+        "sun_short": "Sun"
+      }
     }
   }
 }

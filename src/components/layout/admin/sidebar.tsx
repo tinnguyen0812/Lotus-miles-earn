@@ -11,11 +11,14 @@ import {
   PlusCircle,
   Settings,
   HelpCircle,
-  LogOut
+  LogOut,
+  Globe
 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils"; // (nếu bạn có helper cn); nếu không, thay bằng template string
 import { useRouter } from "next/navigation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 type Item = {
   href: string;
   id: keyof typeof navKeys;
@@ -34,8 +37,8 @@ const navKeys = {
 } as const;
 
 export default function AdminSidebar() {
+  const { t, locale, setLocale } = useTranslation();
   const pathname = usePathname();
-  const { t } = useTranslation();
   const router = useRouter();
 const handleLogout = () => {
     try {
@@ -90,6 +93,24 @@ const handleLogout = () => {
       </nav>
 
       {/* Bottom links + logout */}
+      <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full justify-start gap-3">
+              <Globe className="h-5 w-5" />
+              <span className="text-sm">
+                {t("admin.language.current", { lang: t(`admin.language.${locale}`) })}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem onClick={() => setLocale("en")}>
+              🇬🇧 {t("admin.language.en")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLocale("vi")}>
+              🇻🇳 {t("admin.language.vi")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       <div className="p-3 border-t border-gray-200 space-y-1">
         {bottom.map(({ href, id, icon: Icon }) => (
           <Link
