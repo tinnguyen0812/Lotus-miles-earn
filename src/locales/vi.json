@@ -13,7 +13,10 @@
     "edit": "Chỉnh sửa",
     "cancel": "Hủy",
     "save": "Lưu thay đổi",
-    "miles":"Dặm"
+    "miles":"Dặm",
+    "select": "Lựa chọn",
+    "saving": "Đang lưu",
+    "saved": "Lưu thành công"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -57,7 +60,8 @@
       "platinum": "Platinum",
       "gold": "Gold",
       "silver": "Silver",
-      "member": "Thành viên"
+      "basic": "Thành viên",
+      "bronze": "Bronze"
     },
     "dashboard": {
       "welcome": "Chào mừng trở lại, {{name}}",
@@ -162,6 +166,10 @@
           "Tích dặm thưởng 25%"
         ],
         "basic": [
+          "Tích dặm cơ bản",
+          "Ưu đãi đặc biệt"
+        ],
+        "bronze": [
           "Tích dặm cơ bản",
           "Ưu đãi đặc biệt"
         ]

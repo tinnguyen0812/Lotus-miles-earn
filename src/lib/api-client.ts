@@ -7,10 +7,11 @@ interface RequestOptions {
   path: string;
   body?: any;
   params?: Record<string, any>;
+  headers?: Record<string, string>;
 }
 
 export async function callApi<T>(options: RequestOptions): Promise<T> {
-  const { method, path, body, params } = options;
+  const { method, path, body, params, headers } = options;
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -24,6 +25,7 @@ export async function callApi<T>(options: RequestOptions): Promise<T> {
     method,
     headers: {
       'Content-Type': 'application/json',
+      ...(headers || {}),
     },
   };
 

@@ -16,7 +16,7 @@ import { Logo } from "@/components/logo";
 type ApiSignupResp = {
   success: boolean;
   message?: string;
-  data?: {
+  data: {
     user_id: string;
     account_id: string;
     user: {
@@ -212,9 +212,11 @@ export default function SignupPage() {
       }
 
       const token = res.data?.access_token;
+      const user_id: string = res.data?.user_id;
       if (token) {
         localStorage.setItem("token", token);
         localStorage.setItem("role", "member");
+        localStorage.setItem("user_id", user_id );
         toast({ title: "Account created", description: "Welcome to LotusMiles!" });
         router.push("/member/dashboard");
       } else {
@@ -296,9 +298,9 @@ export default function SignupPage() {
                   defaultValue=""
                 >
                   <option value="" disabled>Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="m">Male</option>
+                  <option value="f">Female</option>
+                  <option value="o">Other</option>
                 </select>
               </div>
             </div>

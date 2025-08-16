@@ -10,7 +10,10 @@
     "edit": "Edit",
     "cancel": "Cancel",
     "save": "Save",
-    "miles":"Miles"
+    "miles":"Miles",
+    "select": "Select",
+    "saving": "Saving...",
+    "saved": "Saved!"
   },
   "header": {
     "title": "Welcome, Member"
@@ -57,7 +60,8 @@
       "platinum": "Platinum",
       "gold": "Gold",
       "silver": "Silver",
-      "member": "Member"
+      "basic": "Member",
+      "bronze": "Bronze"
     },
     "dashboard": {
       "welcome": "Welcome back, {{name}}",
@@ -162,6 +166,10 @@
           "25% bonus miles"
         ],
         "basic": [
+          "Base earning",
+          "Special offers"
+        ],
+        "bronze": [
           "Base earning",
           "Special offers"
         ]

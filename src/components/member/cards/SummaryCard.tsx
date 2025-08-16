@@ -9,10 +9,10 @@ import { useTranslation } from "@/lib/i18n";
 export type MemberInfo = {
   name: string;
   email: string;
-  membershipTier: "Platinum" | "Gold" | "Silver" | "Member" | string;
+  membershipTier: "Platinum" | "Gold" | "Silver" | "Bronze" | string;
   totalMiles: number;
   milesThisYear: number;
-  nextTierMiles: number; // target miles for next tier
+  nextTierMiles: number; // threshold (min_points) of next tier; 0 if max tier
 };
 
 export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
@@ -41,13 +41,14 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
     }
   };
 
-  const progress =
-    memberInfo.nextTierMiles > 0
-      ? Math.min(
-          100,
-          Math.max(0, (memberInfo.milesThisYear / memberInfo.nextTierMiles) * 100)
-        )
-      : 0;
+  // Tính tiến độ dựa trên tổng tích lũy so với mốc của tier kế tiếp
+  const hasNext = memberInfo.nextTierMiles > 0;
+  const progress = hasNext
+    ? Math.min(100, Math.max(0, (memberInfo.totalMiles / memberInfo.nextTierMiles) * 100))
+    : 100;
+  const remaining = hasNext
+    ? Math.max(0, memberInfo.nextTierMiles - memberInfo.totalMiles)
+    : 0;
 
   const tierKey = `member.tier.${memberInfo.membershipTier.toLowerCase()}`;
 
@@ -121,15 +122,17 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
               />
             </div>
             <p className="mt-1 text-xs text-gray-600">
-              {t("member.dashboard.miles_remaining", {
-                count: nf.format(Math.max(0, memberInfo.nextTierMiles - memberInfo.milesThisYear)),
-              })}
+              {hasNext
+                ? t("member.dashboard.miles_remaining", {
+                    count: nf.format(remaining),
+                  })
+                : t("member.dashboard.max_tier") || "You are at the highest tier"}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent activity (mock demo copy) */}
+      {/* Recent activity (mock demo) */}
       <Card className="border-teal-200">
         <CardHeader>
           <CardTitle className="text-teal-600">{t("member.dashboard.recent_activity")}</CardTitle>
