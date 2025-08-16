@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
 
       toast({
         title: t("admin.login.success") || "Signed in",
-        description: t("admin.login.welcome") || "Welcome to Admin Portal",
+        description: t("admin.login.successDesc") || "Welcome to Admin Portal",
       });
 
       router.push("/admin/claims");

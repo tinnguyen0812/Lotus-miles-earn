@@ -115,10 +115,8 @@ export function RequestTracking() {
                     <h2 className="text-teal-700 text-xl font-semibold">{t("member.requests.title")}</h2>
                     <p className="text-muted-foreground">{t("member.requests.subtitle")}</p>
                 </div>
-                <Button className="bg-teal-600 hover:bg-teal-700">
-                    <Link href="/member/claim-miles">
-                        {t("member.requests.create")}
-                    </Link>
+                <Button asChild className="bg-teal-600 hover:bg-teal-700">
+                    <Link href="/member/claim-miles">{t("member.requests.create")}</Link>
                 </Button>
             </div>
 
@@ -173,6 +171,7 @@ export function RequestTracking() {
             {/* Requests list */}
             <div className="space-y-4">
                 {mockRequests.map((req) => (
+                    
                     <Card key={req.id} className="border-teal-200">
                         <CardContent className="p-6">
                             <div className="flex items-start justify-between">
@@ -234,9 +233,20 @@ export function RequestTracking() {
                                     </div>
                                 </div>
 
-                                <Button variant="outline" size="sm" className="ml-4">
-                                    <Eye className="mr-1 h-4 w-4" />
-                                    {t("common.detail")}
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="ml-4"
+                                >
+                                    <Link
+                                        href={`/member/requests/${encodeURIComponent(req.id)}`}
+                                        prefetch={false}
+                                        aria-label={t("member.requests.view_aria", { id: req.id })}
+                                    >
+                                        <Eye className="mr-1 h-4 w-4" />
+                                        {t("common.detail")}
+                                    </Link>
                                 </Button>
                             </div>
                         </CardContent>
