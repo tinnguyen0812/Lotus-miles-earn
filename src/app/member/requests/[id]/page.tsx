@@ -168,7 +168,7 @@ export default async function MemberRequestDetailPage({
   return (
     <RequestDetailClient
       data={data}
-      backTo="/member/request-tracking"
+      backTo="/member/requests"
       contactEmail="support@lotusmiles.vn"
     />
   );

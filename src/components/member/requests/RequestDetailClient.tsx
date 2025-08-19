@@ -6,7 +6,7 @@ import RequestDetail, { RequestDetailData } from "./RequestDetail";
 
 export default function RequestDetailClient({
   data,
-  backTo = "/member/request-tracking",
+  backTo = "/member/requests",
   contactEmail = "support@lotusmiles.vn",
 }: {
   data: RequestDetailData;

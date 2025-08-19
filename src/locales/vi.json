@@ -16,7 +16,13 @@
     "miles":"Dặm",
     "select": "Lựa chọn",
     "saving": "Đang lưu",
-    "saved": "Lưu thành công"
+    "saved": "Lưu thành công",
+    "remove": "Xóa",
+    "prev": "Trang trước",
+    "next": "Trang sau",
+    "page": "Trang",
+    "loading": "Đang tải",
+    "filter": "Lọc"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -95,7 +101,9 @@
         "booking_ref": "Mã đặt chỗ / Số hóa đơn",
         "ticket_no": "Số vé / Số tham chiếu",
         "description": "Mô tả",
-        "attachments": "Đính kèm chứng từ"
+        "attachments": "Đính kèm chứng từ",
+        "seat_code": "Mã ghế ngồi",
+        "amount": "Số tiền"
       },
       "placeholders": {
         "request_type": "Chọn loại yêu cầu",
@@ -180,7 +188,11 @@
         "phone": "Số điện thoại",
         "dob": "Ngày sinh",
         "address": "Địa chỉ",
-        "email_note": "Email không thể thay đổi"
+        "email_note": "Email không thể thay đổi",
+        "city": "Thành phố",
+        "ward": "Phường",
+        "district": "Quận",
+        "country": "Đất nước"
       },
       "security": {
         "title": "Bảo mật",
@@ -334,7 +346,8 @@
         "member": "Thành viên",
         "time": "Thời gian",
         "status": "Trạng thái",
-        "actions": "Hành động"
+        "actions": "Hành động",
+        "miles": "Dặm"
       },
       "buttons": {
         "export": "Xuất báo cáo",
