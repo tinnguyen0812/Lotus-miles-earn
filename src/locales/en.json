@@ -10,10 +10,16 @@
     "edit": "Edit",
     "cancel": "Cancel",
     "save": "Save",
-    "miles":"Miles",
+    "miles": "Miles",
     "select": "Select",
     "saving": "Saving...",
-    "saved": "Saved!"
+    "saved": "Saved!",
+    "remove": "Remove",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page",
+    "loading": "Loading",
+    "filter": "Filter"
   },
   "header": {
     "title": "Welcome, Member"
@@ -95,7 +101,9 @@
         "booking_ref": "Booking reference / Invoice number",
         "ticket_no": "Ticket / Reference number",
         "description": "Description",
-        "attachments": "Supporting documents"
+        "attachments": "Supporting documents",
+        "seat_code": "Seat code",
+        "amount": "Amount"
       },
       "placeholders": {
         "request_type": "Select a request type",
@@ -180,7 +188,11 @@
         "phone": "Phone number",
         "dob": "Date of birth",
         "address": "Address",
-        "email_note": "Email cannot be changed"
+        "email_note": "Email cannot be changed",
+        "city": "City",
+        "ward": "Ward",
+        "district": "District",
+        "country": "Country"
       },
       "security": {
         "title": "Security",
@@ -340,7 +352,8 @@
         "member": "Member",
         "time": "Submitted",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "miles": "Miles"
       },
       "buttons": {
         "export": "Export report",

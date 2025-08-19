@@ -5,63 +5,98 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Eye, MoreHorizontal, Filter } from "lucide-react";
+import {
+  Search,
+  Eye,
+  MoreHorizontal,
+  Filter,
+  Loader2,
+  Download,
+  Calendar,
+} from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 
 export type AdminClaimRow = {
   id: string;
   memberName: string;
-  date: string;                 // dd/MM/yyyy
+  date: string; // dd/MM/yyyy
   summary: string;
   status: "pending" | "processing" | "approved" | "rejected";
   miles: number;
   avatarText: string;
+  /** optional – nếu có tier thì hiện chip nhỏ sau tên */
+  tier?: "gold" | "silver" | "bronze" | "member";
 };
 
 type Props = {
   rows?: AdminClaimRow[];
-  stats?: { pending: number; approved: number; rejected: number; totalMiles: number };
+  stats?: {
+    pending: number;
+    approved: number;
+    rejected: number;
+    totalMiles: number;
+  };
+  loading?: boolean;
+
+  // pagination
+  page?: number;
+  size?: number;
+  total?: number;
+  totalPages?: number;
+  onPageChange?: (p: number) => void;
+  onPageSizeChange?: (s: number) => void;
+
   onViewRequest: (id: string) => void;
 };
 
-export default function AdminRequestsDashboard({ rows, stats, onViewRequest }: Props) {
+export default function AdminRequestsDashboard({
+  rows,
+  stats,
+  loading,
+  page = 1,
+  size = 10,
+  total = 0,
+  totalPages = 1,
+  onPageChange,
+  onPageSizeChange,
+  onViewRequest,
+}: Props) {
   const { t } = useTranslation();
 
-  // Mock khi chưa nối API
-  const fallbackRows: AdminClaimRow[] = [
-    { id: "MR-2024-001", memberName: "Nguyễn Thị Lan", date: "26/01/2024", summary: "Chuyến bay VN125 · SGN → HAN", status: "processing", miles: 2500, avatarText: "NL" },
-    { id: "2", memberName: "Trần Văn Nam", date: "26/01/2024", summary: "Khách sạn InterContinental",       status: "processing", miles: 1200, avatarText: "TN" },
-    { id: "3", memberName: "Lê Thị Hương", date: "25/01/2024", summary: "Thuê xe · 3 ngày",                  status: "processing", miles: 450,  avatarText: "LH" }
-  ];
-  const data = rows && rows.length ? rows : fallbackRows;
+  const data = rows ?? [];
 
   const computed = useMemo(() => {
-    const p = data.filter(x => x.status === "pending" || x.status === "processing").length;
-    const a = data.filter(x => x.status === "approved").length;
-    const r = data.filter(x => x.status === "rejected").length;
-    const tm = data.reduce((s, x) => s + (x.miles || 0), 0);
-    return {
-      pending: stats?.pending ?? p,
-      approved: stats?.approved ?? a,
-      rejected: stats?.rejected ?? r,
-      totalMiles: stats?.totalMiles ?? tm,
-    };
+    const p =
+      stats?.pending ??
+      data.filter((x) => x.status === "pending" || x.status === "processing")
+        .length;
+    const a = stats?.approved ?? data.filter((x) => x.status === "approved").length;
+    const r = stats?.rejected ?? data.filter((x) => x.status === "rejected").length;
+    const tm = stats?.totalMiles ?? data.reduce((s, x) => s + (x.miles || 0), 0);
+    return { pending: p, approved: a, rejected: r, totalMiles: tm };
   }, [data, stats]);
 
   const [q, setQ] = useState("");
   const filtered = useMemo(() => {
     if (!q.trim()) return data;
     const k = q.toLowerCase();
-    return data.filter(r =>
-      r.memberName.toLowerCase().includes(k) ||
-      r.summary.toLowerCase().includes(k) ||
-      r.date.toLowerCase().includes(k)
+    return data.filter(
+      (r) =>
+        r.memberName.toLowerCase().includes(k) ||
+        r.summary.toLowerCase().includes(k) ||
+        r.date.toLowerCase().includes(k)
     );
   }, [data, q]);
 
   const Stat = ({
-    label, value, color
-  }: { label: string; value: string | number; color: "orange" | "green" | "red" | "blue" }) => {
+    label,
+    value,
+    color,
+  }: {
+    label: string;
+    value: string | number;
+    color: "orange" | "green" | "red" | "blue";
+  }) => {
     const map: Record<string, string> = {
       orange: "bg-orange-100 text-orange-600",
       green: "bg-green-100 text-green-600",
@@ -69,57 +104,116 @@ export default function AdminRequestsDashboard({ rows, stats, onViewRequest }: P
       blue: "bg-blue-100 text-blue-600",
     };
     return (
-      <div className="bg-white rounded-lg p-4 border">
+      <div className="rounded-lg border bg-white p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-600">{label}</p>
-            <p className="text-2xl font-semibold mt-1">{value}</p>
+            <p className="mt-1 text-2xl font-semibold">{value}</p>
           </div>
-          <div className={`w-10 h-10 rounded-lg ${map[color]} grid place-items-center`}>
-            <div className="w-4 h-4 rounded-full bg-current opacity-60" />
+          <div className={`grid h-10 w-10 place-items-center rounded-lg ${map[color]}`}>
+            <div className="h-4 w-4 rounded-full bg-current opacity-60" />
           </div>
         </div>
       </div>
     );
   };
 
+  const stripeCls = (s: AdminClaimRow["status"]) =>
+    s === "approved"
+      ? "bg-green-500"
+      : s === "rejected"
+      ? "bg-red-500"
+      : "bg-orange-400"; // pending/processing
+
   const statusBadge = (s: AdminClaimRow["status"]) => {
     switch (s) {
       case "approved":
-        return <Badge className="bg-green-100 text-green-700">{t("admin.claims.stats.approved")}</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-700">
+            {t("admin.claims.stats.approved")}
+          </Badge>
+        );
       case "rejected":
-        return <Badge className="bg-red-100 text-red-700">{t("admin.claims.stats.rejected")}</Badge>;
+        return (
+          <Badge className="bg-red-100 text-red-700">
+            {t("admin.claims.stats.rejected")}
+          </Badge>
+        );
       case "processing":
-        return <Badge className="bg-orange-100 text-orange-700">{t("admin.claims.stats.pending")}</Badge>;
+      case "pending":
       default:
-        return <Badge variant="secondary">{t("admin.claims.stats.pending")}</Badge>;
+        return (
+          <Badge className="bg-orange-100 text-orange-700">
+            {t("admin.claims.stats.pending")}
+          </Badge>
+        );
     }
   };
 
+  const tierBadge = (tier?: AdminClaimRow["tier"]) => {
+  if (!tier) return null;
+
+  // Khai báo map với key là union cụ thể để TS không phàn nàn khi index
+  const cls: Record<NonNullable<AdminClaimRow["tier"]>, string> = {
+    gold: "bg-yellow-100 text-yellow-700",
+    silver: "bg-gray-100 text-gray-700",
+    bronze: "bg-amber-100 text-amber-700",
+    member: "bg-teal-100 text-teal-700",
+  };
+
+  // CHÚ Ý: chỉ truyền 1 tham số vào t(); tham số thứ 2 của t() là object params,
+  // nên không truyền trực tiếp 'tier' (gây lỗi như screenshot).
+  const label = t(`member.tier.${tier}`) || tier;
+
+  return <Badge className={`ml-2 ${cls[tier]}`}>{label}</Badge>;
+};
+
+  // helper hiển thị khoảng bản ghi
+  const from = total ? (page - 1) * size + 1 : 0;
+  const to = total ? Math.min(page * size, total) : 0;
+
+  // dải trang ngắn gọn quanh current page
+  const pageNumbers = useMemo(() => {
+    const delta = 2;
+    const start = Math.max(1, page - delta);
+    const end = Math.min(totalPages, page + delta);
+    const arr: number[] = [];
+    for (let i = start; i <= end; i++) arr.push(i);
+    return arr;
+  }, [page, totalPages]);
+
   return (
-    <div className="p-6 bg-gray-50 min-h-[calc(100vh-64px)]">
+    <div className="min-h-[calc(100vh-64px)] bg-gray-50 p-6">
+      {/* Title */}
       <div className="mb-6">
-        <h1 className="text-2xl mb-2">{t("admin.claims.title")}</h1>
+        <h1 className="mb-2 text-2xl">{t("admin.claims.title")}</h1>
         <p className="text-gray-600">{t("admin.claims.subtitle")}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Stat label={t("admin.claims.stats.pending")}     value={computed.pending}                     color="orange" />
-        <Stat label={t("admin.claims.stats.approved")}    value={computed.approved}                    color="green" />
-        <Stat label={t("admin.claims.stats.rejected")}    value={computed.rejected}                    color="red" />
-        <Stat label={t("admin.claims.stats.total_miles")} value={computed.totalMiles.toLocaleString()} color="blue" />
+      {/* Overview stats */}
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+        <Stat label={t("admin.claims.stats.pending")} value={computed.pending} color="orange" />
+        <Stat label={t("admin.claims.stats.approved")} value={computed.approved} color="green" />
+        <Stat label={t("admin.claims.stats.rejected")} value={computed.rejected} color="red" />
+        <Stat
+          label={t("admin.claims.stats.total_miles")}
+          value={computed.totalMiles.toLocaleString()}
+          color="blue"
+        />
       </div>
 
-      <div className="bg-white rounded-lg border p-4 mb-6">
-        <div className="flex items-center justify-between mb-4">
+      {/* Toolbar */}
+      <div className="mb-4 rounded-lg border bg-white p-4">
+        <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg">{t("admin.claims.queue_title")}</h2>
           <Button className="bg-blue-600 hover:bg-blue-700">
+            <Download className="mr-2 h-4 w-4" />
             {t("admin.claims.buttons.export")}
           </Button>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative flex-1 max-w-md">
+          <div className="relative max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <Input
               placeholder={t("admin.claims.search_placeholder")}
@@ -130,89 +224,147 @@ export default function AdminRequestsDashboard({ rows, stats, onViewRequest }: P
           </div>
           <Button variant="outline" className="flex items-center gap-2">
             <Filter size={16} />
-            {/* bạn có thể thêm key i18n riêng cho "Filter" nếu muốn */}
-            Filter
+            {/* có thể i18n riêng cho Filter nếu muốn */}
+            {t("common.filter") || "Filter"}
           </Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="border-b bg-gray-50">
-              <tr>
-                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.member")}</th>
-                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.time")}</th>
-                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.status")}</th>
-                <th className="text-left p-4 text-sm text-gray-600">{t("admin.claims.table.actions")}</th>
-                <th className="text-center p-4 text-sm text-gray-600" />
-              </tr>
-            </thead>
-            <tbody>
+      {/* List */}
+      <div className="rounded-lg border bg-white">
+        {loading ? (
+          <div className="flex items-center gap-2 p-6">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>{t("common.loading") || "Loading..."}</span>
+          </div>
+        ) : (
+          <>
+            <ul className="divide-y">
               {filtered.map((r) => (
-                <tr key={r.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback className="text-xs bg-blue-100 text-blue-600">
+                <li key={r.id} className="relative">
+                  {/* stripe trạng thái */}
+                  <div className={`absolute left-0 top-0 h-full w-1 ${stripeCls(r.status)}`} />
+
+                  <div className="flex items-center justify-between gap-4 p-4 pl-6 hover:bg-gray-50">
+                    {/* left: avatar + info */}
+                    <div className="flex min-w-0 items-start gap-3">
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback className="bg-blue-100 text-xs text-blue-600">
                           {r.avatarText}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="font-medium">{r.memberName}</p>
-                        <p className="text-sm text-gray-500">{r.summary}</p>
+
+                      <div className="min-w-0">
+                        <div className="mb-1 flex flex-wrap items-center">
+                          <span className="truncate text-sm font-medium text-gray-900">
+                            {r.memberName}
+                          </span>
+                          {tierBadge(r.tier)}
+                        </div>
+
+                        <p className="truncate text-sm text-gray-600">{r.summary}</p>
+
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+                          <span className="inline-flex items-center">
+                            <Calendar className="mr-1 h-3.5 w-3.5" />
+                            {r.date}
+                          </span>
+                          {/* miles */}
+                          <span className="font-medium text-blue-600">
+                            {r.miles.toLocaleString()} {t("common.miles") || "miles"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </td>
-                  <td className="p-4">{r.date}</td>
-                  <td className="p-4">{statusBadge(r.status)}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
+
+                    {/* right: status + actions */}
+                    <div className="flex shrink-0 items-center gap-3">
+                      {statusBadge(r.status)}
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => onViewRequest(r.id)}
-                        className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                        className="border-blue-200 text-blue-600 hover:bg-blue-50"
                       >
-                        <Eye size={14} className="mr-1" />
+                        <Eye className="mr-1 h-4 w-4" />
                         {t("admin.claims.buttons.view")}
                       </Button>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-600">
+                        <MoreHorizontal size={16} />
+                      </Button>
                     </div>
-                  </td>
-                  <td className="p-4 text-center">
-                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                      <MoreHorizontal size={16} />
-                    </Button>
-                  </td>
-                </tr>
+                  </div>
+                </li>
               ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td className="p-6 text-center text-sm text-muted-foreground" colSpan={5}>
-                    {t("admin.claims.empty")}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
 
-        <div className="flex items-center justify-between p-4 border-t">
-          <p className="text-sm text-gray-600">
-            {t("admin.claims.showing", { count: Math.min(filtered.length, 10), total: filtered.length })}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled>
-              {t("admin.claims.buttons.prev")}
-            </Button>
-            <Button size="sm" className="bg-blue-600 text-white">1</Button>
-            <Button variant="outline" size="sm">2</Button>
-            <Button variant="outline" size="sm">3</Button>
-            <Button variant="outline" size="sm">
-              {t("admin.claims.buttons.next")}
-            </Button>
-          </div>
-        </div>
+              {filtered.length === 0 && (
+                <li className="p-6 text-center text-sm text-muted-foreground">
+                  {t("admin.claims.empty")}
+                </li>
+              )}
+            </ul>
+
+            {/* footer + pagination */}
+            <div className="flex flex-col gap-3 border-t p-4 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-gray-600">
+                {total
+                  ? `Showing ${from}–${to} of ${total} results`
+                  : t("admin.claims.showing", {
+                      count: filtered.length,
+                      total: filtered.length,
+                    })}
+              </p>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onPageChange?.(Math.max(1, page - 1))}
+                  disabled={page <= 1}
+                >
+                  {t("admin.claims.buttons.prev")}
+                </Button>
+
+                {pageNumbers[0] > 1 && <span className="px-1">…</span>}
+                {pageNumbers.map((n) => (
+                  <Button
+                    key={n}
+                    variant={n === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange?.(n)}
+                    className={n === page ? "bg-blue-600 text-white" : undefined}
+                  >
+                    {n}
+                  </Button>
+                ))}
+                {pageNumbers[pageNumbers.length - 1] < totalPages && (
+                  <span className="px-1">…</span>
+                )}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onPageChange?.(Math.min(totalPages, page + 1))}
+                  disabled={page >= totalPages}
+                >
+                  {t("admin.claims.buttons.next")}
+                </Button>
+
+                <select
+                  className="ml-2 rounded-md border border-gray-300 p-2 text-sm"
+                  value={size}
+                  onChange={(e) => onPageSizeChange?.(Number(e.target.value) || 10)}
+                >
+                  {[10, 20, 50].map((n) => (
+                    <option key={n} value={n}>
+                      {n} / page
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

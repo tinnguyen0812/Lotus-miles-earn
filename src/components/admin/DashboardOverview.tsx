@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -9,51 +10,169 @@ import {
   Clock, CheckCircle, XCircle, Users, TrendingUp, ArrowUpRight, FileText, Award,
 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { callApi } from "@/lib/api-client";
 
 interface DashboardOverviewProps {
   onNavigateToRequests: () => void;
 }
 
-export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewProps) {
-  const { t } = useTranslation();
+/** ----- API types ----- */
+type TSItem = { ts: string; count: number };
+type OverviewRes = {
+  requests: {
+    processed: number; // đã duyệt
+    rejected: number;
+    processing: number; // đang chờ/đang xử lý
+    total_miles: number;
+    delta: {
+      processing_vs_yesterday: number;
+      approved_vs_week: number;
+      rejected_vs_week: number;
+    };
+  };
+  requests_timeseries: {
+    new_requests: TSItem[];
+    processed: TSItem[];
+    miles_credited: TSItem[];
+  };
+  processing_speed: {
+    bins: number[]; // giờ [6,12,...]
+    cumulative_percent: number[]; // % tích lũy theo bin
+    percentiles: { p50: number; p90: number; p95: number };
+  };
+  members: {
+    total_members: number;
+    new_members: number;
+    active_members: number;
+    by_tier: { member: number; bronze: number; silver: number; gold: number };
+  };
+  miles_this_month: number;
+};
 
-  // mock số liệu — bạn có thể thay bằng dữ liệu API
-  const pending = 24;
-  const approved = 156;
-  const rejected = 12;
-  const totalMembers = 1248;
-  const creditedThisMonth = 450_230;
+/** ----- helpers ----- */
+const fmtDelta = (n: number) => `${n > 0 ? "+" : ""}${n}`;
+
+function makeLastNDays(n: number, tz: string) {
+  // tạo mảng ngày (local) dạng yyyy-mm-dd cho 7 ngày gần nhất (bao gồm hôm nay)
+  const out: string[] = [];
+  const now = new Date();
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    // ISO ngắn (yyyy-mm-dd)
+    out.push(d.toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewProps) {
+  const { t, locale } = useTranslation();
+
+  const [data, setData] = useState<OverviewRes | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // gọi API overview
+  useEffect(() => {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    let canceled = false;
+
+    (async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token") || "";
+        const res = await callApi<{ data: OverviewRes }>({
+          method: "GET",
+          path: `/ms-loyalty/admin/dashboard/overview?tz=${encodeURIComponent(tz)}&bucket=day`,
+          headers: { Authorization: `Bearer ${token}` }, 
+        });
+        if (!canceled) setData(res?.data ?? null);
+      } catch {
+        if (!canceled) setData(null);
+      } finally {
+        if (!canceled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      canceled = true;
+    };
+  }, []);
+
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+
+  // ----- map dữ liệu về UI -----
+  const pending = data?.requests.processing ?? 0;
+  const approved = data?.requests.processed ?? 0;
+  const rejected = data?.requests.rejected ?? 0;
+
+  const totalMembers = data?.members.total_members ?? 0;
+  const creditedThisMonth = data?.miles_this_month ?? 0;
+
+  const deltaProcessing = fmtDelta(data?.requests.delta.processing_vs_yesterday ?? 0);
+  const deltaApproved = fmtDelta(data?.requests.delta.approved_vs_week ?? 0);
+  const deltaRejected = fmtDelta(data?.requests.delta.rejected_vs_week ?? 0);
 
   const requestStats = [
-    { title: t("admin.dashboard.status.pending"),   value: String(pending),  change: t("admin.dashboard.status.change_day", { value: "+6" }),  color: "bg-orange-100 text-orange-600", icon: Clock },
-    { title: t("admin.dashboard.status.approved"),  value: String(approved), change: t("admin.dashboard.status.change_week", { value: "+12" }), color: "bg-green-100 text-green-600",  icon: CheckCircle },
-    { title: t("admin.dashboard.status.rejected"),  value: String(rejected), change: t("admin.dashboard.status.change_week", { value: "+3" }),  color: "bg-red-100 text-red-600",     icon: XCircle },
+    {
+      title: t("admin.dashboard.status.pending"),
+      value: String(pending),
+      change: t("admin.dashboard.status.change_day", { value: deltaProcessing }),
+      color: "bg-orange-100 text-orange-600",
+      icon: Clock,
+    },
+    {
+      title: t("admin.dashboard.status.approved"),
+      value: String(approved),
+      change: t("admin.dashboard.status.change_week", { value: deltaApproved }),
+      color: "bg-green-100 text-green-600",
+      icon: CheckCircle,
+    },
+    {
+      title: t("admin.dashboard.status.rejected"),
+      value: String(rejected),
+      change: t("admin.dashboard.status.change_week", { value: deltaRejected }),
+      color: "bg-red-100 text-red-600",
+      icon: XCircle,
+    },
   ];
 
-  const memberStats = [
-    { title: t("admin.dashboard.members.total"), value: totalMembers.toLocaleString(), change: t("admin.dashboard.members.new_count", { value: "+45" }), color: "bg-blue-100 text-blue-600", icon: Users },
-    { title: t("admin.dashboard.members.credited_this_month"), value: creditedThisMonth.toLocaleString(), change: t("admin.dashboard.members.vs_last_month", { value: "+15%" }), color: "bg-purple-100 text-purple-600", icon: Award },
-  ];
+  // Activity (7 ngày gần nhất): gộp new_requests + processed, fill 0 nếu thiếu ngày
+  const activityData = useMemo(() => {
+    const days = makeLastNDays(7, tz);
+    const reqMap = new Map<string, number>();
+    const proMap = new Map<string, number>();
+    (data?.requests_timeseries.new_requests ?? []).forEach((i) =>
+      reqMap.set(i.ts.slice(0, 10), (reqMap.get(i.ts.slice(0, 10)) ?? 0) + i.count)
+    );
+    (data?.requests_timeseries.processed ?? []).forEach((i) =>
+      proMap.set(i.ts.slice(0, 10), (proMap.get(i.ts.slice(0, 10)) ?? 0) + i.count)
+    );
 
-  const activityData = [
-    { day: t("admin.dashboard.weekday.mon_short"), requests: 18, processed: 15 },
-    { day: t("admin.dashboard.weekday.tue_short"), requests: 22, processed: 19 },
-    { day: t("admin.dashboard.weekday.wed_short"), requests: 16, processed: 18 },
-    { day: t("admin.dashboard.weekday.thu_short"), requests: 28, processed: 24 },
-    { day: t("admin.dashboard.weekday.fri_short"), requests: 25, processed: 22 },
-    { day: t("admin.dashboard.weekday.sat_short"), requests: 19, processed: 17 },
-    { day: t("admin.dashboard.weekday.sun_short"), requests: 14, processed: 12 },
-  ];
+    return days.map((iso) => {
+      const d = new Date(iso);
+      const dayLabel =
+        new Intl.DateTimeFormat(locale ?? "en-US", { weekday: "short" }).format(d); // Mon, Tue...
+      return {
+        day: dayLabel,
+        requests: reqMap.get(iso) ?? 0,
+        processed: proMap.get(iso) ?? 0,
+      };
+    });
+  }, [data, locale, tz]);
 
-  const processingSpeedData = [
-    { time: "6h",  speed: 85 },
-    { time: "12h", speed: 92 },
-    { time: "18h", speed: 78 },
-    { time: "24h", speed: 88 },
-    { time: "30h", speed: 95 },
-    { time: "36h", speed: 82 },
-    { time: "42h", speed: 90 },
-  ];
+  // Processing speed: dùng cumulative_percent theo bins
+  const { processingSpeedData, avgEff } = useMemo(() => {
+    const bins = data?.processing_speed.bins ?? [6, 12, 18, 24, 30, 36, 42];
+    const cp = data?.processing_speed.cumulative_percent ?? new Array(bins.length).fill(0);
+    const list = bins.map((b, i) => ({
+      time: `${b}h`,
+      speed: cp[i] ?? 0,
+    }));
+
+    // lấy giá trị cuối cùng làm "average efficiency" (hoặc trung bình nếu muốn)
+    const last = cp.length ? cp[cp.length - 1] : 0;
+    return { processingSpeedData: list, avgEff: last };
+  }, [data]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -63,7 +182,7 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
         <p className="text-gray-600">{t("admin.dashboard.subtitle")}</p>
       </div>
 
-      {/* Request overview widgets */}
+      {/* Requests overview */}
       <div className="mb-8">
         <h2 className="mb-4 flex items-center gap-2">
           <FileText className="w-5 h-5 text-blue-600" />
@@ -84,7 +203,7 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
                         </div>
                         <div>
                           <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                          <p className="font-semibold">{stat.value}</p>
+                          <p className="font-semibold">{loading ? "—" : stat.value}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
@@ -139,8 +258,8 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7280" }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7280" }} />
-                  <Bar dataKey="requests"  name={t("admin.dashboard.activity.new_requests")} fill="#3b82f6" radius={[4,4,0,0]} maxBarSize={40} />
-                  <Bar dataKey="processed" name={t("admin.dashboard.activity.processed")}   fill="#10b981" radius={[4,4,0,0]} maxBarSize={40} />
+                  <Bar dataKey="requests" name={t("admin.dashboard.activity.new_requests")} fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                  <Bar dataKey="processed" name={t("admin.dashboard.activity.processed")} fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -171,17 +290,25 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
                 <LineChart data={processingSpeedData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7280" }} />
-                  <YAxis domain={[70, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7280" }} />
-                  <Line type="monotone" dataKey="speed" stroke="#8b5cf6" strokeWidth={3}
-                        dot={{ fill: "#8b5cf6", strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, fill: "#8b5cf6" }} />
+                  <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7280" }} />
+                  <Line
+                    type="monotone"
+                    dataKey="speed"
+                    name="%"
+                    stroke="#8b5cf6"
+                    strokeWidth={3}
+                    dot={{ fill: "#8b5cf6", strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, fill: "#8b5cf6" }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600">
                 {t("admin.dashboard.processing.avg_efficiency")}{" "}
-                <span className="font-semibold text-purple-600">87.1%</span>
+                <span className="font-semibold text-purple-600">
+                  {typeof avgEff === "number" ? `${avgEff.toFixed(1)}%` : "—"}
+                </span>
               </p>
             </div>
           </CardContent>
@@ -195,8 +322,25 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
           {t("admin.dashboard.members.title")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {memberStats.map((stat, idx) => {
-            const Icon = stat.icon;
+          {[
+            {
+              title: t("admin.dashboard.members.total"),
+              value: totalMembers.toLocaleString(),
+              change: t("admin.dashboard.members.new_count", {
+                value: fmtDelta(data?.members.new_members ?? 0),
+              }),
+              color: "bg-blue-100 text-blue-600",
+              icon: Users,
+            },
+            {
+              title: t("admin.dashboard.members.credited_this_month"),
+              value: creditedThisMonth.toLocaleString(),
+              change: t("admin.dashboard.members.vs_last_month", { value: "—" }),
+              color: "bg-purple-100 text-purple-600",
+              icon: Award,
+            },
+          ].map((stat, idx) => {
+            const Icon = stat.icon as any;
             return (
               <Card key={idx} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
@@ -207,7 +351,7 @@ export function DashboardOverview({ onNavigateToRequests }: DashboardOverviewPro
                       </div>
                       <div>
                         <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                        <p className="font-semibold">{stat.value}</p>
+                        <p className="font-semibold">{loading ? "—" : stat.value}</p>
                         <div className="flex items-center gap-1 mt-1">
                           <ArrowUpRight size={14} className="text-green-500" />
                           <span className="text-sm text-gray-500">{stat.change}</span>
