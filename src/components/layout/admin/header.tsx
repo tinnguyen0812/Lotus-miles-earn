@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { LotusIcon } from "@/components/icons"; // hoặc Logo nhỏ
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Cog } from "lucide-react";
 import { ReactNode } from "react";
@@ -33,6 +34,7 @@ export default function AdminHeader({ title, children }: Props) {
 
         {/* Right: language + quick actions */}
         <div className="flex items-center gap-2">
+          <SidebarTrigger className="lg:hidden" />
           <LanguageSwitcher />
           <Button asChild variant="ghost" size="sm" className="text-gray-700">
             <Link href="/admin/profile"><User className="h-4 w-4 mr-2" />{t("admin.header.profile")}</Link>
