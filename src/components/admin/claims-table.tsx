@@ -240,11 +240,12 @@ export default function AdminRequestsDashboard({
             </div>
           ) : (
             <>
-              <ul className="divide-y">
-                {filtered.map((r) => (
-                  <li key={r.id} className="relative">
-                    {/* stripe trạng thái */}
-                    <div className={`absolute left-0 top-0 h-full w-1 ${stripeCls(r.status)}`} />
+              <div className="overflow-x-auto">
+                <ul className="divide-y">
+                  {filtered.map((r) => (
+                    <li key={r.id} className="relative">
+                      {/* stripe trạng thái */}
+                      <div className={`absolute left-0 top-0 h-full w-1 ${stripeCls(r.status)}`} />
 
                     <div className="flex items-center justify-between gap-4 p-4 pl-6 hover:bg-gray-50">
                       {/* left: avatar + info */}
@@ -303,7 +304,8 @@ export default function AdminRequestsDashboard({
                     {t("admin.claims.empty")}
                   </li>
                 )}
-              </ul>
+                </ul>
+              </div>
 
               {/* footer + pagination */}
               <div className="flex flex-col gap-3 border-t p-4 md:flex-row md:items-center md:justify-between">
