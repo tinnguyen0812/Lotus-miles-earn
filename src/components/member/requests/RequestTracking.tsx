@@ -17,7 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-export type RequestStatus = "pending" | "processing" | "approved" | "rejected";
+export type RequestStatus = "pending" | "processing" | "processed" | "rejected";
 
 export interface MilesRequest {
   id: string; // request_number nếu có, fallback id
@@ -34,7 +34,7 @@ export interface MilesRequest {
 /** Map status từ API -> UI */
 function mapStatus(apiStatus: string): RequestStatus {
   const s = (apiStatus || "").toLowerCase();
-  if (s === "credited" || s === "approved" || s === "success") return "approved";
+  if (s === "processed" || s === "approved" || s === "success") return "processed";
   if (s === "rejected" || s === "declined") return "rejected";
   if (s === "pending") return "pending";
   return "processing";
@@ -88,7 +88,7 @@ export function RequestTracking() {
         return <Clock className="h-4 w-4 text-orange-500" />;
       case "processing":
         return <Clock className="h-4 w-4 text-blue-500" />;
-      case "approved":
+      case "processed":
         return <CheckCircle className="h-4 w-4 text-green-600" />;
       case "rejected":
         return <XCircle className="h-4 w-4 text-red-500" />;
@@ -99,13 +99,13 @@ export function RequestTracking() {
     const map: Record<RequestStatus, string> = {
       pending: "member.requests.status.pending",
       processing: "member.requests.status.processing",
-      approved: "member.requests.status.approved",
+      processed: "member.requests.status.approved",
       rejected: "member.requests.status.rejected",
     };
     const cls: Record<RequestStatus, string> = {
       pending: "bg-orange-100 text-orange-800",
       processing: "bg-blue-100 text-blue-800",
-      approved: "bg-green-100 text-green-800",
+      processed: "bg-green-100 text-green-800",
       rejected: "bg-red-100 text-red-800",
     };
     return <Badge className={cls[s]}>{t(map[s])}</Badge>;
@@ -175,7 +175,7 @@ export function RequestTracking() {
     const counts = {
       pending: requests.filter((r) => r.status === "pending").length,
       processing: requests.filter((r) => r.status === "processing").length,
-      approved: requests.filter((r) => r.status === "approved").length,
+      processed: requests.filter((r) => r.status === "processed").length,
       rejected: requests.filter((r) => r.status === "rejected").length,
     };
     return counts;
@@ -223,7 +223,7 @@ export function RequestTracking() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{t("member.requests.status.approved")}</p>
-                <p className="text-2xl font-bold text-green-600">{summary.approved}</p>
+                <p className="text-2xl font-bold text-green-600">{summary.processed}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-200" />
             </div>

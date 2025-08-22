@@ -21,9 +21,13 @@ type Province = { code: number; name: string; codename: string };
 type District = { code: number; name: string; codename: string; province_code: number };
 type Ward = { code: number; name: string; codename: string; district_code: number };
 const digitsOnly = (s: string) => s.replace(/[()\s-]/g, "");
+
 /** ====== Validation schema ====== */
 const passRule =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,72}$/; // 8-72, hoa, thường, số, ký tự đặc biệt
+
+// number | ""  (coerce string -> number cho <select>)
+const codeOrEmpty = z.union([z.coerce.number().int().positive(), z.literal("")]);
 
 const SignupSchema = z
   .object({
@@ -49,10 +53,12 @@ const SignupSchema = z
       .min(3, "ZIP quá ngắn")
       .max(12, "ZIP quá dài")
       .regex(/^[A-Za-z0-9\- ]+$/, "ZIP không hợp lệ"),
+
     /** Các trường điều khiển cho VN */
-    provinceCode: z.union([z.number(), z.literal("")]).optional(),
-    districtCode: z.union([z.number(), z.literal("")]).optional(),
-    wardCode: z.union([z.number(), z.literal("")]).optional(),
+    provinceCode: codeOrEmpty.optional(),
+    districtCode: codeOrEmpty.optional(),
+    wardCode: codeOrEmpty.optional(),
+
     /** Các trường text cho quốc gia khác */
     cityText: z.string().optional(),
     stateText: z.string().optional(),
@@ -71,11 +77,12 @@ const SignupSchema = z
       if (!v.cityText) ctx.addIssue({ code: "custom", path: ["cityText"], message: "Nhập City/Province" });
       if (!v.stateText) ctx.addIssue({ code: "custom", path: ["stateText"], message: "Nhập State" });
     }
+
     const raw = v.phone_numbers?.trim() || "";
     const compact = digitsOnly(raw);
 
     if (isVN) {
-      // Hợp lệ: 0 + 9 số  OR  +84 + 9 số
+      // 0 + 9 số  OR  +84 + 9 số
       const ok = /^0\d{9}$/.test(compact) || /^\+84\d{9}$/.test(raw);
       if (!ok) {
         ctx.addIssue({
@@ -85,7 +92,7 @@ const SignupSchema = z
         });
       }
     } else {
-      // Cho quốc gia khác: 8–20 chữ số (cho phép +, khoảng trắng, (), -)
+      // Quốc gia khác: 8–20 chữ số (cho phép +, (), khoảng trắng, -)
       const ok = /^\+?[0-9][0-9()\-\s]{7,19}$/.test(raw);
       if (!ok) {
         ctx.addIssue({
@@ -126,6 +133,9 @@ export default function SignupPage() {
     defaultValues: {
       country: "Vietnam",
       gender: "m",
+      provinceCode: "",
+      districtCode: "",
+      wardCode: "",
     },
   });
 
@@ -139,6 +149,7 @@ export default function SignupPage() {
 
   const provinceCode = watch("provinceCode");
   const districtCode = watch("districtCode");
+  const wardCode = watch("wardCode");
 
   useEffect(() => {
     if (!isVN) return;
@@ -155,7 +166,10 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!isVN || !provinceCode) {
-      setDistricts([]); setValue("districtCode", ""); setWards([]); setValue("wardCode", "");
+      setDistricts([]);
+      setValue("districtCode", "");
+      setWards([]);
+      setValue("wardCode", "");
       return;
     }
     (async () => {
@@ -171,7 +185,8 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!isVN || !districtCode) {
-      setWards([]); setValue("wardCode", "");
+      setWards([]);
+      setValue("wardCode", "");
       return;
     }
     (async () => {
@@ -194,8 +209,8 @@ export default function SignupPage() {
     [districts, districtCode]
   );
   const selectedWard = useMemo(
-    () => wards.find(w => w.code === watch("wardCode")),
-    [wards, watch]
+    () => wards.find(w => w.code === wardCode),
+    [wards, wardCode]
   );
 
   /** ====== Submit ====== */
@@ -216,7 +231,6 @@ export default function SignupPage() {
     const payload = {
       email: values.email,
       password: values.password,
-      confirm_password: values.confirmPassword,
       first_name: values.first_name.trim(),
       last_name: values.last_name.trim(),
       gender: values.gender, // "m" | "f" | "o"
@@ -340,11 +354,10 @@ export default function SignupPage() {
               {isVN ? (
                 <>
                   <div className="space-y-2">
-                    <FieldLabel required >City / Province</FieldLabel>
+                    <FieldLabel required>City / Province</FieldLabel>
                     <select
                       className="w-full rounded-md border border-teal-200 p-2"
-                      {...register("provinceCode")}
-                      onChange={(e) => setValue("provinceCode", e.target.value ? Number(e.target.value) : "")}
+                      {...register("provinceCode", { setValueAs: v => (v === "" ? "" : Number(v)) })}
                     >
                       <option value="">Chọn Tỉnh/Thành</option>
                       {provinces.map((p) => (
@@ -359,8 +372,7 @@ export default function SignupPage() {
                     <FieldLabel required>District</FieldLabel>
                     <select
                       className="w-full rounded-md border border-teal-200 p-2"
-                      {...register("districtCode")}
-                      onChange={(e) => setValue("districtCode", e.target.value ? Number(e.target.value) : "")}
+                      {...register("districtCode", { setValueAs: v => (v === "" ? "" : Number(v)) })}
                       disabled={!provinceCode}
                     >
                       <option value="">Chọn Quận/Huyện</option>
@@ -376,8 +388,7 @@ export default function SignupPage() {
                     <FieldLabel required>Ward</FieldLabel>
                     <select
                       className="w-full rounded-md border border-teal-200 p-2"
-                      {...register("wardCode")}
-                      onChange={(e) => setValue("wardCode", e.target.value ? Number(e.target.value) : "")}
+                      {...register("wardCode", { setValueAs: v => (v === "" ? "" : Number(v)) })}
                       disabled={!districtCode}
                     >
                       <option value="">Chọn Phường/Xã</option>

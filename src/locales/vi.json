@@ -13,7 +13,7 @@
     "edit": "Chỉnh sửa",
     "cancel": "Hủy",
     "save": "Lưu thay đổi",
-    "miles":"Dặm",
+    "miles": "Dặm",
     "select": "Lựa chọn",
     "saving": "Đang lưu",
     "saved": "Lưu thành công",
@@ -22,7 +22,8 @@
     "next": "Trang sau",
     "page": "Trang",
     "loading": "Đang tải",
-    "filter": "Lọc"
+    "filter": "Lọc",
+    "back": "Trở lại"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -63,11 +64,11 @@
       "logout": "Đăng xuất"
     },
     "tier": {
-      "platinum": "Platinum",
-      "gold": "Gold",
-      "silver": "Silver",
+      "platinum": "Bạch kim",
+      "gold": "Vàng",
+      "silver": "Bạc",
       "basic": "Thành viên",
-      "bronze": "Bronze"
+      "bronze": "Đồng"
     },
     "dashboard": {
       "welcome": "Chào mừng trở lại, {{name}}",
@@ -393,7 +394,7 @@
       }
     },
     "login": {
-      "title": "Admin Portal",
+      "title": "Cổng quản trị",
       "subtitle": "Đăng nhập để truy cập hệ thống quản trị",
       "email": "Email",
       "password": "Mật khẩu",
@@ -412,7 +413,7 @@
       "secured": "Hệ thống được bảo mật bởi LotusMiles Security"
     },
     "nav": {
-      "dashboard": "Dashboard",
+      "dashboard": "Bảng điều khiển",
       "requests": "Yêu cầu tích dặm",
       "members": "Thành viên",
       "transactions": "Phát thưởng",
@@ -505,6 +506,45 @@
       "pager": {
         "prev": "Trước",
         "next": "Sau"
+      },
+      "detail": {
+        "title": "Chi tiết thành viên",
+        "subtitle": "Xem và quản lý thông tin của thành viên",
+        "section": {
+          "personal": "Thông tin cá nhân",
+          "stats": "Thống kê hoạt động",
+          "recentTx": "Giao dịch gần đây",
+          "accountInfo": "Thông tin tài khoản"
+        },
+        "labels": {
+          "dob": "Ngày sinh",
+          "accountStatus": "Trạng thái tài khoản",
+          "memberId": "Mã thành viên",
+          "joinDate": "Ngày tham gia",
+          "lastActive": "Hoạt động gần nhất",
+          "tier": "Hạng"
+        },
+        "account": {
+          "active": "Đang hoạt động",
+          "suspended": "Tạm khóa",
+          "activeText": "Tài khoản đang hoạt động",
+          "suspendedText": "Tài khoản đang tạm khóa"
+        },
+        "stats": {
+          "totalMiles": "Tổng dặm tích lũy",
+          "burnedMiles": "Dặm đã đổi",
+          "monthlyTx": "Giao dịch trong tháng",
+          "tenure": "Thời gian là thành viên",
+          "tenureValue": "{{months}} tháng"
+        },
+        "tx": {
+          "earnLabel": "Cộng dặm",
+          "redeemLabel": "Đổi dặm",
+          "empty": "Không có giao dịch."
+        },
+        "tier": {
+          "member": "Thành viên"
+        }
       }
     },
     "rewards": {

@@ -56,8 +56,6 @@ const handleLogout = () => {
   ];
 
   const bottom: Item[] = [
-    { href: "/admin/settings", id: "settings", icon: Settings },
-    { href: "/admin/help",     id: "help",     icon: HelpCircle }
   ];
 
   return (

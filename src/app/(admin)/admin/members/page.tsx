@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Search, Filter, Download, Edit, Eye, MoreHorizontal, Loader2 } from 'lucide-react';
 import withAdminGuard from '@/components/auth/withAdminGuard';
 import { callApi } from '@/lib/api-client';
+import { useRouter } from "next/navigation";
 
 type TierKey = 'gold' | 'silver' | 'bronze' | 'member';
 
@@ -34,6 +35,7 @@ type Row = {
   joinDate: string;    // dd/MM/yyyy
   status: 'Active' | 'Inactive';
   avatar: string;      // initials
+  user_number: string
 };
 
 function toInitials(name: string) {
@@ -52,7 +54,7 @@ function mapTier(tierName?: string | null): TierKey {
 
 function MembersPage() {
   const { t } = useTranslation();
-
+  const router = useRouter();
   // search & pagination
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -89,7 +91,8 @@ function MembersPage() {
             'Member';
 
           return {
-            id: u.user_number || u.id,
+            id: u.id,
+            user_number: u.user_number || "",
             name,
             email: u.user_email || '-',
             tier: mapTier(u.tier?.tier_name),
@@ -117,7 +120,7 @@ function MembersPage() {
     })();
     return () => { cancelled = true; };
   }, [page, size]);
-
+  const onView = (userId: string) => router.push(`/admin/members/${encodeURIComponent(userId)}`);
   // filter client-side
   const filtered = useMemo(
     () => {
@@ -126,7 +129,7 @@ function MembersPage() {
       return rows.filter(m =>
         m.name.toLowerCase().includes(q) ||
         (m.email || '').toLowerCase().includes(q) ||
-        (m.id || '').toLowerCase().includes(q)
+        (m.user_number || '').toLowerCase().includes(q)
       );
     },
     [rows, searchTerm]
@@ -266,7 +269,7 @@ function MembersPage() {
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className="font-mono text-sm">{m.id}</span>
+                        <span className="font-mono text-sm">{m.user_number}</span>
                       </td>
                       <td className="p-4">
                         <Badge className={tierBadgeClass(m.tier)}>
@@ -286,14 +289,8 @@ function MembersPage() {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center justify-center gap-2">
-                          <Button size="sm" variant="ghost" className="w-8 h-8 p-0 text-blue-600">
+                          <Button onClick={() => onView(m.id)} size="sm" variant="ghost" className="w-8 h-8 p-0 text-blue-600">
                             <Eye size={14} />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="w-8 h-8 p-0 text-gray-600">
-                            <Edit size={14} />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="w-8 h-8 p-0 text-gray-600">
-                            <MoreHorizontal size={14} />
                           </Button>
                         </div>
                       </td>
