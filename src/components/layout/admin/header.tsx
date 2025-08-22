@@ -6,12 +6,14 @@ import { LotusIcon } from "@/components/icons"; // hoặc Logo nhỏ
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Cog } from "lucide-react";
+import { ReactNode } from "react";
 
 type Props = {
   title?: string;
+  children?: ReactNode;
 };
 
-export default function AdminHeader({ title }: Props) {
+export default function AdminHeader({ title, children }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -19,6 +21,7 @@ export default function AdminHeader({ title }: Props) {
       <div className="max-w-full h-full px-4 lg:px-6 flex items-center justify-between">
         {/* Left: brand (small) + title */}
         <div className="flex items-center gap-3">
+          {children}
           <Link href="/admin/dashboard" className="flex items-center gap-2">
             <LotusIcon className="h-6 w-6 text-teal-600" />
           </Link>
