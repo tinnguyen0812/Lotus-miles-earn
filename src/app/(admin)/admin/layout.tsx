@@ -1,17 +1,17 @@
 "use client";
 
-import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
-import AdminSidebar  from "@/components/layout/admin/sidebar";
-import AdminHeader from "@/components/layout/admin/header";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import AdminSidebar from "@/components/layout/admin/sidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <SidebarProvider className="bg-gray-50">
       <AdminSidebar />
-      <div className="flex-1 flex flex-col">
-        <main className="mx-auto w-full max-w-screen-xl px-3 sm:px-4 lg:px-6">{children}</main>
-      </div>
-    </div>
+      <SidebarInset>
+        <div className="mx-auto w-full max-w-screen-xl px-3 sm:px-4 lg:px-6">
+          {children}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
