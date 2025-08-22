@@ -7,14 +7,14 @@ import { callApi } from "@/lib/api-client";
 import withAdminGuard from "@/components/auth/withAdminGuard";
 
 type ApiItem = {
-  id: string;
+  id: string;                      // UUID (dùng để điều hướng / gọi detail)
   request_type: string;
   status: string;
   points: number;
   description: string;
   user?: { first_name?: string | null; last_name?: string | null; user_name?: string | null } | null;
   uploaded_at?: string;
-  request_number?: string;
+  request_number?: string;         // REQ-xxxxx (chỉ để hiển thị)
   flight_code?: string;
   flight_departure_airport?: string;
   flight_arrival_airport?: string;
@@ -22,7 +22,7 @@ type ApiItem = {
 
 function mapStatus(s: string): AdminClaimRow["status"] {
   const x = (s || "").toLowerCase();
-  if (x === "credited" || x === "approved" || x === "success") return "approved";
+  if (x === "processed" || x === "approved" || x === "success") return "processed";
   if (x === "rejected" || x === "declined") return "rejected";
   if (x === "pending") return "pending";
   return "processing"; // xem như pending ở UI
@@ -58,6 +58,7 @@ function AdminClaimsPage() {
 
   // --- tải list theo trang ---
   useEffect(() => {
+    const ac = new AbortController();
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -84,7 +85,8 @@ function AdminClaimsPage() {
             ? `Chuyến bay ${it.flight_code ?? ""} · ${it.flight_departure_airport ?? ""} → ${it.flight_arrival_airport ?? ""}`.trim()
             : (it.description || "—");
           return {
-            id: it.request_number || it.id,
+            id: it.id,                              // ✅ UUID – dùng để View/Detail
+            reqNo: it.request_number,  // (optional) REQ-xxxxx để hiển thị nếu muốn
             memberName: name,
             date: it.uploaded_at ? df.format(new Date(it.uploaded_at)) : "",
             summary,
@@ -93,7 +95,9 @@ function AdminClaimsPage() {
             avatarText: initials(name),
           };
         });
-
+        if (cancelled) {
+          return
+        }
         if (!cancelled) {
           setRows(mapped);
           setTotal(Number(pg.total || 0));
@@ -111,6 +115,7 @@ function AdminClaimsPage() {
     })();
     return () => {
       cancelled = true;
+      ac.abort()
     };
   }, [page, size]);
 
@@ -143,7 +148,7 @@ function AdminClaimsPage() {
 
           for (const it of items) {
             const s = mapStatus(it.status);
-            if (s === "approved") approved++;
+            if (s === "processed") approved++;
             else if (s === "rejected") rejected++;
             else pending++; // pending + processing
             totalMiles += Number(it.points || 0);

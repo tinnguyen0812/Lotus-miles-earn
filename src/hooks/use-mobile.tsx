@@ -1,19 +1,19 @@
-import * as React from "react"
+"use client";
+import { useSyncExternalStore } from "react";
 
-const MOBILE_BREAKPOINT = 768
+const MOBILE = 768;
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
-
-  return !!isMobile
+  const subscribe = (cb: () => void) => {
+    const mql = window.matchMedia(`(max-width:${MOBILE - 1}px)`);
+    // @ts-ignore older Safari
+    const add = mql.addEventListener ? mql.addEventListener.bind(mql, "change") : mql.addListener.bind(mql);
+    // @ts-ignore older Safari
+    const rm  = mql.removeEventListener ? mql.removeEventListener.bind(mql, "change") : mql.removeListener.bind(mql);
+    add(cb);
+    return () => rm(cb);
+  };
+  const get = () => window.innerWidth < MOBILE;
+  const getServer = () => false; // tránh hydrate mismatch
+  return useSyncExternalStore(subscribe, get, getServer);
 }

@@ -60,6 +60,7 @@ export default function AdminLoginPage() {
 
       // Lưu token & refresh token (nếu có) + gán role admin
       localStorage.setItem("token", token);
+      localStorage.setItem("user_id", resp.data?.user_id || "")
       if (resp.data?.refresh_token) {
         localStorage.setItem("refresh_token", resp.data.refresh_token);
       }

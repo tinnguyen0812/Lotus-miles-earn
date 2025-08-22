@@ -19,7 +19,8 @@
     "next": "Next",
     "page": "Page",
     "loading": "Loading",
-    "filter": "Filter"
+    "filter": "Filter",
+    "back": "Back"
   },
   "header": {
     "title": "Welcome, Member"
@@ -511,6 +512,45 @@
       "pager": {
         "prev": "Previous",
         "next": "Next"
+      },
+      "detail": {
+        "title": "Member detail",
+        "subtitle": "View and manage member information",
+        "section": {
+          "personal": "Personal information",
+          "stats": "Activity statistics",
+          "recentTx": "Recent transactions",
+          "accountInfo": "Account information"
+        },
+        "labels": {
+          "dob": "Date of birth",
+          "accountStatus": "Account status",
+          "memberId": "Member ID",
+          "joinDate": "Joined",
+          "lastActive": "Last active",
+          "tier": "Tier"
+        },
+        "account": {
+          "active": "Active",
+          "suspended": "Suspended",
+          "activeText": "The account is active",
+          "suspendedText": "The account is temporarily suspended"
+        },
+        "stats": {
+          "totalMiles": "Total earned miles",
+          "burnedMiles": "Redeemed miles",
+          "monthlyTx": "Transactions this month",
+          "tenure": "Membership duration",
+          "tenureValue": "{{months}} months"
+        },
+        "tx": {
+          "earnLabel": "Earn",
+          "redeemLabel": "Redeem",
+          "empty": "No transactions."
+        },
+        "tier": {
+          "member": "Member"
+        }
       }
     },
     "rewards": {
