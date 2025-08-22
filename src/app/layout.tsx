@@ -7,6 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Lotus Loyalty Hub",
   description: "Vietnam Airlines Loyalty Program",
+  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
