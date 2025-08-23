@@ -212,11 +212,11 @@ export default function AdminDirectMileagePage() {
       </div>
 
       {/* Form */}
-      <Card className="mb-6">
+      <Card className="mb-6 max-w-full">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Transaction details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-600 mb-1">Member ID *</label>
@@ -294,11 +294,11 @@ export default function AdminDirectMileagePage() {
       </Card>
 
       {/* Recent transactions */}
-      <Card>
+      <Card className="max-w-full">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Recent transactions</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4">
           {loadingTx ? (
             <div className="p-4 flex items-center gap-2 text-sm">
               <Loader2 className="h-4 w-4 animate-spin" />

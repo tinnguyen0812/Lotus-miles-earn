@@ -24,6 +24,7 @@ type ApiUser = {
   tier?: { tier_name?: string | null } | null;
   points?: { total_points?: number } | null;
   user_number?: string | null;
+  status: string
 };
 
 type Row = {
@@ -33,7 +34,7 @@ type Row = {
   tier: TierKey;
   totalMiles: number;
   joinDate: string;    // dd/MM/yyyy
-  status: 'Active' | 'Inactive';
+  status: string;
   avatar: string;      // initials
   user_number: string
 };
@@ -98,7 +99,7 @@ function MembersPage() {
             tier: mapTier(u.tier?.tier_name),
             totalMiles: Number(u.points?.total_points || 0),
             joinDate: u.created_at ? df.format(new Date(u.created_at)) : '',
-            status: 'Active', // API chưa có trạng thái
+            status: (u.status || '').toLowerCase() === 'inactive' ? 'Inactive' : 'Active',
             avatar: toInitials(name),
           };
         });
@@ -134,7 +135,10 @@ function MembersPage() {
     },
     [rows, searchTerm]
   );
-
+  const statusBadgeClass = (s: Row['status']) =>
+    s.toLowerCase() === 'inactive'
+      ? 'bg-gray-200 text-gray-700'      // Inactive
+      : 'bg-green-100 text-green-700'; // Active
   // stats
   const now = new Date();
   const newThisMonth = rows.filter(r => {
@@ -149,20 +153,20 @@ function MembersPage() {
   );
 
   const stats = [
-    { label: t('admin.members.stats.total'),        value: total.toLocaleString(), color: 'bg-blue-100 text-blue-600' },
-    { label: t('admin.members.stats.newThisMonth'), value: newThisMonth,           color: 'bg-green-100 text-green-600' },
-    { label: 'Gold',                                 value: tierCounts.gold   || 0, color: 'bg-yellow-100 text-yellow-600' },
-    { label: 'Silver / Bronze',                      value: (tierCounts.silver || 0) + (tierCounts.bronze || 0), color: 'bg-gray-100 text-gray-700' },
+    { label: t('admin.members.stats.total'), value: total.toLocaleString(), color: 'bg-blue-100 text-blue-600' },
+    { label: t('admin.members.stats.newThisMonth'), value: newThisMonth, color: 'bg-green-100 text-green-600' },
+    { label: 'Gold', value: tierCounts.gold || 0, color: 'bg-yellow-100 text-yellow-600' },
+    { label: 'Silver / Bronze', value: (tierCounts.silver || 0) + (tierCounts.bronze || 0), color: 'bg-gray-100 text-gray-700' },
   ];
 
   const tierBadgeClass = (tier: TierKey) =>
     tier === 'gold'
       ? 'bg-yellow-100 text-yellow-700'
       : tier === 'silver'
-      ? 'bg-gray-200 text-gray-700'
-      : tier === 'bronze'
-      ? 'bg-amber-100 text-amber-700'
-      : 'bg-teal-100 text-teal-700';
+        ? 'bg-gray-200 text-gray-700'
+        : tier === 'bronze'
+          ? 'bg-amber-100 text-amber-700'
+          : 'bg-teal-100 text-teal-700';
 
   // pager helpers
   const from = total ? (page - 1) * size + 1 : 0;
@@ -233,7 +237,7 @@ function MembersPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border">
+      <div className="bg-white rounded-lg border relative z-0">
         {loading ? (
           <div className="p-6 flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -241,7 +245,7 @@ function MembersPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto relative z-0">
               <table className="w-full">
                 <thead className="border-b bg-gray-50">
                   <tr>
@@ -285,7 +289,11 @@ function MembersPage() {
                         <span className="text-sm">{m.joinDate}</span>
                       </td>
                       <td className="p-4">
-                        <Badge className="bg-green-100 text-green-700"> {t('admin.members.status.active')} </Badge>
+                        <Badge className={statusBadgeClass(m.status)}>
+                          {m.status === 'Inactive'
+                            ? t('admin.members.status.inactive')
+                            : t('admin.members.status.active')}
+                        </Badge>
                       </td>
                       <td className="p-4">
                         <div className="flex items-center justify-center gap-2">

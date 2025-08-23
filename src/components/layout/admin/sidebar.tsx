@@ -9,8 +9,6 @@ import {
   Users,
   CreditCard,
   PlusCircle,
-  Settings,
-  HelpCircle,
   LogOut,
   Globe
 } from "lucide-react";
@@ -19,6 +17,12 @@ import { cn } from "@/lib/utils"; // (nếu bạn có helper cn); nếu không, 
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  useSidebar
+} from "@/components/ui/sidebar";
 type Item = {
   href: string;
   id: keyof typeof navKeys;
@@ -40,7 +44,9 @@ export default function AdminSidebar() {
   const { t, locale, setLocale } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
-const handleLogout = () => {
+  const { setOpenMobile } = useSidebar();
+
+  const handleLogout = () => {
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
@@ -59,76 +65,79 @@ const handleLogout = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 flex flex-col">
-      {/* Brand */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center gap-3">
-          <Logo size="xs" />
+    <Sidebar collapsible="offcanvas">
+      <SidebarHeader className="border-b border-gray-200">
+        <div className="p-6">
+          <div className="flex items-center gap-3">
+            <Logo size="xs" />
+          </div>
+          <p className="mt-1 text-xs text-gray-500">{t("admin.brand")}</p>
         </div>
-        <p className="text-xs text-gray-500 mt-1">{t("admin.brand")}</p>
-      </div>
+      </SidebarHeader>
+      <SidebarContent className="p-3">
+        <nav className="flex-1 space-y-1">
+          {menu.map(({ href, id, icon: Icon }) => {
+            const active = pathname === href || pathname?.startsWith(href + "/");
+            return (
+              <Link
+                key={id}
+                href={href}
+                onClick={() => setOpenMobile(false)}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                  active
+                    ? "bg-blue-50 text-blue-700"
+                    : "text-gray-700 hover:bg-gray-50",
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                <span>{t(navKeys[id])}</span>
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mt-auto space-y-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full justify-start gap-3">
+                <Globe className="h-5 w-5" />
+                <span className="text-sm">
+                  {t("admin.language.current", { lang: t(`admin.language.${locale}`) })}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <DropdownMenuItem onClick={() => setLocale("en")}>
+                🇬🇧 {t("admin.language.en")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocale("vi")}>
+                🇻🇳 {t("admin.language.vi")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="space-y-1 border-t border-gray-200 pt-3">
+            {bottom.map(({ href, id, icon: Icon }) => (
+              <Link
+                key={id}
+                href={href}
+                onClick={() => setOpenMobile(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+              >
+                <Icon className="h-5 w-5" />
+                <span>{t(navKeys[id])}</span>
+              </Link>
+            ))}
 
-      {/* Main nav */}
-      <nav className="flex-1 p-3 space-y-1">
-        {menu.map(({ href, id, icon: Icon }) => {
-          const active = pathname === href || pathname?.startsWith(href + "/");
-          return (
-            <Link
-              key={id}
-              href={href}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                active
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-50"
-              )}
+            <button
+              onClick={handleLogout}
+              className="mt-2 flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50"
             >
-              <Icon className="h-5 w-5" />
-              <span>{t(navKeys[id])}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Bottom links + logout */}
-      <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-start gap-3">
-              <Globe className="h-5 w-5" />
-              <span className="text-sm">
-                {t("admin.language.current", { lang: t(`admin.language.${locale}`) })}
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48">
-            <DropdownMenuItem onClick={() => setLocale("en")}>
-              🇬🇧 {t("admin.language.en")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setLocale("vi")}>
-              🇻🇳 {t("admin.language.vi")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      <div className="p-3 border-t border-gray-200 space-y-1">
-        {bottom.map(({ href, id, icon: Icon }) => (
-          <Link
-            key={id}
-            href={href}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
-          >
-            <Icon className="h-5 w-5" />
-            <span>{t(navKeys[id])}</span>
-          </Link>
-        ))}
-
-        <button
-          onClick={handleLogout}
-          className="mt-2 flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>{t(navKeys.logout)}</span>
-        </button>
-      </div>
-    </aside>
+              <LogOut className="h-5 w-5" />
+              <span>{t(navKeys.logout)}</span>
+            </button>
+          </div>
+        </div>
+      </SidebarContent>
+    </Sidebar>
   );
 }
