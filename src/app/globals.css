@@ -86,3 +86,9 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+div[role="dialog"][data-state="closed"],
+div[role="menu"][data-state="closed"],
+div[role="combobox"][data-state="closed"] {
+  pointer-events: none !important;
+}

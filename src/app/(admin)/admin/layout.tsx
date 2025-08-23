@@ -19,14 +19,23 @@ export default function AdminLayout({
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <Sidebar>
+      {/* ✅ BẮT BUỘC có Sidebar để SidebarTrigger hoạt động đúng */}
+      <Sidebar className="z-40">
         <AdminSidebar />
       </Sidebar>
-      <SidebarInset>
-        <AdminHeader>
-          <SidebarTrigger className="mr-2" />
-        </AdminHeader>
-        <main className="mx-auto w-full max-w-screen-xl px-3 sm:px-4 lg:px-6">
+
+      {/* isolate tạo stacking context riêng để header luôn on-top */}
+      <SidebarInset className="relative isolate">
+        {/* Header sticky + z rất cao để không bị nội dung “đè” khi list render */}
+        <div className="sticky top-0 z-[9999] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <AdminHeader>
+            {/* ✅ Dùng trigger trực tiếp, không wrap thêm Button */}
+            <SidebarTrigger className="mr-2 lg:hidden" />
+          </AdminHeader>
+        </div>
+
+        {/* Main không có z cao để khỏi che header */}
+        <main className="relative z-0 mx-auto w-full max-w-screen-xl px-3 sm:px-4 lg:px-6">
           {children}
         </main>
       </SidebarInset>

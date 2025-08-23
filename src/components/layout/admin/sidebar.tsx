@@ -21,6 +21,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  useSidebar
 } from "@/components/ui/sidebar";
 type Item = {
   href: string;
@@ -43,6 +44,7 @@ export default function AdminSidebar() {
   const { t, locale, setLocale } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
+  const { setOpenMobile } = useSidebar();
 
   const handleLogout = () => {
     try {
@@ -80,6 +82,7 @@ export default function AdminSidebar() {
               <Link
                 key={id}
                 href={href}
+                onClick={() => setOpenMobile(false)}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                   active
@@ -117,6 +120,7 @@ export default function AdminSidebar() {
               <Link
                 key={id}
                 href={href}
+                onClick={() => setOpenMobile(false)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
               >
                 <Icon className="h-5 w-5" />
