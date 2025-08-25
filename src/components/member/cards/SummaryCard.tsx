@@ -3,8 +3,9 @@
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, MapPin, Calendar, Star } from "lucide-react";
+import { Trophy, MapPin, Calendar, Star, Loader2 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { callApi } from "@/lib/api-client";
 
 export type MemberInfo = {
   name: string;
@@ -13,6 +14,27 @@ export type MemberInfo = {
   totalMiles: number;
   milesThisYear: number;
   nextTierMiles: number; // threshold (min_points) of next tier; 0 if max tier
+};
+
+/* ===== API types for recent activity ===== */
+type RecentApiItem = {
+  id: string;
+  request_type: "flight" | "purchase" | "other" | string;
+  status: string; // processed | processing | pending | rejected ...
+  points: number;
+  description?: string;
+  uploaded_at?: string;
+  processed_at?: string;
+  flight_departure_airport?: string | null;
+  flight_arrival_airport?: string | null;
+};
+
+type RecentRow = {
+  id: string;
+  title: string;
+  dateISO: string;
+  points?: number; // show +miles when processed/approved
+  status?: "processing" | "pending" | "rejected"; // else undefined = processed/approved
 };
 
 export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
@@ -41,7 +63,7 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
     }
   };
 
-  // Tính tiến độ dựa trên tổng tích lũy so với mốc của tier kế tiếp
+  // ====== Upgrade progress ======
   const hasNext = memberInfo.nextTierMiles > 0;
   const progress = hasNext
     ? Math.min(100, Math.max(0, (memberInfo.totalMiles / memberInfo.nextTierMiles) * 100))
@@ -51,6 +73,76 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
     : 0;
 
   const tierKey = `member.tier.${memberInfo.membershipTier.toLowerCase()}`;
+
+  // ====== Recent activity state & fetch ======
+  const [recent, setRecent] = React.useState<RecentRow[]>([]);
+  const [recentLoading, setRecentLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setRecentLoading(true);
+      try {
+        const token = localStorage.getItem("token") || "";
+        const xUserId =
+          localStorage.getItem("x-user-id") ||
+          localStorage.getItem("user_id") ||
+          process.env.NEXT_PUBLIC_X_USER_ID ||
+          "";
+
+        const res = await callApi<any>({
+          method: "GET",
+          path: `/ms-loyalty/member/claim-miles-manual?size=3&page=1&sort=desc`, // base: /api/v1
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "x-user-id": xUserId,
+          },
+        });
+
+        const list: RecentApiItem[] =
+          res?.data?.data?.data ?? res?.data?.data ?? res?.data ?? [];
+
+        const rows: RecentRow[] = list.map((it) => {
+          const dep = (it.flight_departure_airport || "").trim();
+          const arr = (it.flight_arrival_airport || "").trim();
+          const type = String(it.request_type || "").toLowerCase();
+
+          const title =
+            type === "flight" && dep && arr
+              ? t("member.dashboard.activity.flight", { route: `${dep} → ${arr}` })
+              : type === "purchase"
+              ? t("member.dashboard.activity.partner_purchase")
+              : t("member.dashboard.activity.manual_claim");
+
+          const s = String(it.status || "").toLowerCase();
+          const isProcessed = s === "processed" || s === "approved";
+
+          const status: RecentRow["status"] =
+            isProcessed ? undefined : s === "rejected" ? "rejected" : s === "pending" ? "pending" : "processing";
+
+          return {
+            id: it.id,
+            title,
+            dateISO: it.processed_at || it.uploaded_at || new Date().toISOString(),
+            points: isProcessed ? Number(it.points || 0) : undefined,
+            status,
+          };
+        });
+
+        if (!cancelled) setRecent(rows);
+      } catch {
+        if (!cancelled) setRecent([]);
+      } finally {
+        if (!cancelled) setRecentLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   return (
     <div className="space-y-6">
@@ -123,58 +215,83 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
             </div>
             <p className="mt-1 text-xs text-gray-600">
               {hasNext
-                ? t("member.dashboard.miles_remaining", {
-                    count: nf.format(remaining),
-                  })
+                ? t("member.dashboard.miles_remaining", { count: nf.format(remaining) })
                 : t("member.dashboard.max_tier") || "You are at the highest tier"}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent activity (mock demo) */}
+      {/* Recent activity (from API) */}
       <Card className="border-teal-200">
         <CardHeader>
-          <CardTitle className="text-teal-600">{t("member.dashboard.recent_activity")}</CardTitle>
+          <CardTitle className="text-teal-600">
+            {t("member.dashboard.recent_activity")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between rounded-lg bg-teal-50 p-3">
-              <div>
-                <p className="font-medium text-teal-700">
-                  {t("member.dashboard.activity.flight", { route: "SGN → HAN" })}
-                </p>
-                <p className="text-sm text-gray-600">{df.format(new Date("2025-08-08"))}</p>
-              </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                {t("member.dashboard.activity.miles_plus", { count: nf.format(1250) })}
-              </Badge>
+          {recentLoading ? (
+            <div className="p-3 flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {t("common.loading") || "Loading..."}
             </div>
+          ) : recent.length === 0 ? (
+            <div className="text-sm text-muted-foreground">
+              {t("common.no_data") || "No data"}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {recent.map((r) => {
+                const rowBg =
+                  r.status === "rejected"
+                    ? "bg-red-50"
+                    : r.status
+                    ? "bg-orange-50"
+                    : "bg-teal-50";
+                const titleColor =
+                  r.status === "rejected"
+                    ? "text-red-700"
+                    : r.status
+                    ? "text-orange-700"
+                    : "text-teal-700";
 
-            <div className="flex items-center justify-between rounded-lg bg-teal-50 p-3">
-              <div>
-                <p className="font-medium text-teal-700">
-                  {t("member.dashboard.activity.partner_purchase")}
-                </p>
-                <p className="text-sm text-gray-600">{df.format(new Date("2025-08-05"))}</p>
-              </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                {t("member.dashboard.activity.miles_plus", { count: nf.format(500) })}
-              </Badge>
-            </div>
+                return (
+                  <div
+                    key={r.id}
+                    className={`flex items-center justify-between rounded-lg ${rowBg} p-3`}
+                  >
+                    <div>
+                      <p className={`font-medium ${titleColor}`}>{r.title}</p>
+                      <p className="text-sm text-gray-600">
+                        {df.format(new Date(r.dateISO))}
+                      </p>
+                    </div>
 
-            <div className="flex items-center justify-between rounded-lg bg-orange-50 p-3">
-              <div>
-                <p className="font-medium text-orange-700">
-                  {t("member.dashboard.activity.manual_claim")}
-                </p>
-                <p className="text-sm text-gray-600">{df.format(new Date("2025-08-03"))}</p>
-              </div>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                {t("member.dashboard.activity.processing")}
-              </Badge>
+                    {typeof r.points === "number" ? (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        {t("member.dashboard.activity.miles_plus", {
+                          count: nf.format(r.points),
+                        })}
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className={
+                          r.status === "rejected"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-orange-100 text-orange-800"
+                        }
+                      >
+                        {r.status === "rejected"
+                          ? t("member.dashboard.activity.rejected") || "Rejected"
+                          : t("member.dashboard.activity.processing")}
+                      </Badge>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>
