@@ -29,6 +29,7 @@ export interface MilesRequest {
   actualMiles?: number;
   rejectionReason?: string;
   processingNotes?: string;
+  request_number: string
 }
 
 /** Map status từ API -> UI */
@@ -135,7 +136,7 @@ export function RequestTracking() {
 
         const mapped: MilesRequest[] = arr.map((it) => {
           const uiType = mapType(it.request_type);
-          const id = it.request_number || it.id;
+          const id = it.id;
           const status = mapStatus(it.status);
           const description =
             uiType === "missing-flight" ? flightDescription(it, locale) : it.description || "";
@@ -146,6 +147,7 @@ export function RequestTracking() {
             submittedDate: it.uploaded_at || it.processed_at || new Date().toISOString(),
             status,
             expectedMiles: Number(it.points || 0),
+            request_number: it.request_number
             // actualMiles: có thể map khi API trả riêng
           };
         });
@@ -173,7 +175,6 @@ export function RequestTracking() {
 
   const summary = useMemo(() => {
     const counts = {
-      pending: requests.filter((r) => r.status === "pending").length,
       processing: requests.filter((r) => r.status === "processing").length,
       processed: requests.filter((r) => r.status === "processed").length,
       rejected: requests.filter((r) => r.status === "rejected").length,
@@ -196,17 +197,6 @@ export function RequestTracking() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-orange-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{t("member.requests.status.pending")}</p>
-                <p className="text-2xl font-bold text-orange-600">{summary.pending}</p>
-              </div>
-              <Clock className="h-8 w-8 text-orange-200" />
-            </div>
-          </CardContent>
-        </Card>
         <Card className="border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -261,7 +251,7 @@ export function RequestTracking() {
                   <div className="flex-1">
                     <div className="mb-2 flex items-center gap-3">
                       {statusIcon(req.status)}
-                      <h3 className="font-medium text-teal-700">{req.id}</h3>
+                      <h3 className="font-medium text-teal-700">{req.request_number}</h3>
                       {statusBadge(req.status)}
                     </div>
 
