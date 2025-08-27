@@ -52,9 +52,9 @@ function normalizeTierName(n?: string | null): MemberInfo["membershipTier"] {
     case "gold": return "gold";
     case "silver": return "silver";
     case "platinum": return "platinum"; // để phòng có thêm
-    case "bronze":
+    case "bronze": return "bronze"
     default:
-      return "bronze";
+      return "member";
   }
 }
 
@@ -86,7 +86,7 @@ function benefitsByLocale(
 const MOCK: MemberInfo = {
   name: "Member",
   email: "member@example.com",
-  membershipTier: "basic",
+  membershipTier: "member",
   totalMiles: 150,
   milesThisYear: 150,
   nextTierMiles: 350, // ví dụ tới silver 500,

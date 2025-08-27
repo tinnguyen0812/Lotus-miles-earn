@@ -206,18 +206,6 @@ function MembersPage() {
 
       {/* Controls */}
       <div className="bg-white rounded-lg border p-4 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg">{t('admin.members.list.title')}</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex items-center gap-2">
-              <Download size={16} />
-              {t('admin.members.list.export')}
-            </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              {t('admin.members.list.add')}
-            </Button>
-          </div>
-        </div>
 
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
@@ -229,10 +217,6 @@ function MembersPage() {
               className="pl-10"
             />
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter size={16} />
-            {t('admin.members.list.filterTier')}
-          </Button>
         </div>
       </div>
 

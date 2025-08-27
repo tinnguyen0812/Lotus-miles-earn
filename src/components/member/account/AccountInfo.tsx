@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 export interface MemberInfo {
   name: string;
   email: string;
-  membershipTier: "platinum" | "gold" | "silver" | "bronze" | "basic";
+  membershipTier: "platinum" | "gold" | "silver" | "bronze" | "member";
   totalMiles: number;
   milesThisYear: number;
   /** số điểm còn thiếu để lên bậc kế tiếp (đã tính sẵn) */
@@ -176,7 +176,7 @@ export function AccountInfo({
     gold: "bg-yellow-500 text-white",
     silver: "bg-gray-400 text-white",
     bronze: "bg-amber-700 text-white",
-    basic: "bg-teal-600 text-white",
+    member: "bg-teal-600 text-white",
   };
 
   // Địa chỉ hiển thị đầy đủ (view mode)
