@@ -40,9 +40,10 @@ function mapTierToLabel(apiName: string): MemberInfo["membershipTier"] {
       return "Gold";
     case "silver":
       return "Silver";
-    // "bronze" coi như base tier -> Member
+    case "Bronze":
+      return "Bronze"
     default:
-      return "Bronze";
+      return "Member";
   }
 }
 

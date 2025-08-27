@@ -114,7 +114,7 @@
         "description": "Vui lòng mô tả chi tiết giao dịch của bạn..."
       },
       "types": {
-        "missing_flight": "Chuyến bay bị thiếu dặm",
+        "missing_flight": "Tích dặm cho chuyến bay",
         "partner_purchase": "Mua sắm tại đối tác",
         "credit_card": "Thanh toán thẻ tín dụng",
         "hotel_stay": "Lưu trú khách sạn",
@@ -336,7 +336,7 @@
       "title": "Quản lý yêu cầu tích dặm thủ công",
       "subtitle": "Xem và xử lý các yêu cầu tích dặm thủ công từ thành viên",
       "status": {
-        "pending": "Chờ duyệt",
+        "processing": "Chờ duyệt",
         "approved": "Đã duyệt",
         "rejected": "Từ chối",
         "total_miles": "Tổng dặm"

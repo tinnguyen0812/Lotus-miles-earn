@@ -1,14 +1,14 @@
 "use client";
 
-import {useState} from "react";
-import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Separator} from "@/components/ui/separator";
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter} from "@/components/ui/dialog";
-import {Textarea} from "@/components/ui/textarea";
-import {Download, UserRound, Plane, PlusCircle, Paperclip} from "lucide-react";
-import {useTranslation} from "@/lib/i18n";
+import { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Download, UserRound, Plane, PlusCircle, Paperclip } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export type ClaimStatus = "pending" | "processing" | "approved" | "rejected";
 
@@ -56,7 +56,7 @@ export function RequestDetail({
   onApprove: () => Promise<void> | void;
   onReject: (reason: string) => Promise<void> | void;
 }) {
-  const {t, locale} = useTranslation();
+  const { t, locale } = useTranslation();
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
@@ -88,7 +88,7 @@ export function RequestDetail({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">
-            {t("admin.claims.detail.title", {id: data.id})}
+            {t("admin.claims.detail.title", { id: data.id })}
           </h1>
           <p className="text-sm text-muted-foreground">
             {t("admin.claims.detail.submittedAt")} {formatDate(data.submittedAt)}
@@ -129,7 +129,7 @@ export function RequestDetail({
               <div>{data.member.tier}</div>
 
               <div className="text-muted-foreground">{t("admin.claims.detail.tenure")}</div>
-              <div>{t("admin.claims.detail.tenureValue", {months: data.member.tenureMonths})}</div>
+              <div>{t("admin.claims.detail.tenureValue", { months: data.member.tenureMonths })}</div>
 
               <div className="text-muted-foreground">{t("admin.claims.detail.totalMiles")}</div>
               <div>{data.member.totalMiles.toLocaleString()}</div>
@@ -179,7 +179,7 @@ export function RequestDetail({
             <div className="text-2xl font-semibold text-emerald-700">
               +{formatMiles(data.expectedMiles)}
             </div>
-            <Separator/>
+            <Separator />
             <div>
               <p className="text-sm font-medium mb-2">{t("admin.claims.detail.requestReason")}</p>
               <div className="rounded-md border bg-muted/40 p-3 text-sm leading-relaxed">
@@ -198,16 +198,22 @@ export function RequestDetail({
             {t("admin.claims.detail.attachments")} ({data.attachments.length})
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-3">
+        <CardContent className="space-y-3">
           {data.attachments.map(file => (
-            <div key={file.id}
-                 className="flex items-center justify-between rounded-md border p-3 bg-muted/30">
-              <div>
-                <p className="text-sm font-medium">{file.name}</p>
+            <div
+              key={file.id}
+              className="flex items-center justify-between rounded-md border p-3 bg-muted/30 w-full"
+            >
+              <div className="min-w-0"> {/* giữ text không tràn */}
+                <p className="text-sm font-medium truncate">{file.name}</p>
                 <p className="text-xs text-muted-foreground">{formatSize(file.sizeBytes)}</p>
               </div>
-              <a href={file.url} target="_blank" rel="noopener noreferrer"
-                 className="inline-flex items-center gap-1 text-primary hover:underline">
+              <a
+                href={file.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-primary hover:underline flex-shrink-0"
+              >
                 <Download className="h-4 w-4" />
                 {t("admin.claims.detail.download")}
               </a>
@@ -217,14 +223,20 @@ export function RequestDetail({
       </Card>
 
       {/* Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Button className="h-11 text-base" onClick={onApprove}>
-          {t("admin.claims.detail.actions.approve")}
-        </Button>
-        <Button variant="destructive" className="h-11 text-base" onClick={() => setRejectOpen(true)}>
-          {t("admin.claims.detail.actions.reject")}
-        </Button>
-      </div>
+      {!(data.status === "approved" || data.status === "rejected") && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Button className="h-11 text-base" onClick={onApprove}>
+            {t("admin.claims.detail.actions.approve")}
+          </Button>
+          <Button
+            variant="destructive"
+            className="h-11 text-base"
+            onClick={() => setRejectOpen(true)}
+          >
+            {t("admin.claims.detail.actions.reject")}
+          </Button>
+        </div>
+      )}
 
       {/* Reject dialog */}
       <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
@@ -234,17 +246,17 @@ export function RequestDetail({
           </DialogHeader>
           <Textarea
             value={rejectReason}
-            onChange={(e)=>setRejectReason(e.target.value)}
+            onChange={(e) => setRejectReason(e.target.value)}
             placeholder={t("admin.claims.detail.rejectDialog.placeholder") || ""}
             className="min-h-[120px]"
           />
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={()=>setRejectOpen(false)}>
+            <Button variant="outline" onClick={() => setRejectOpen(false)}>
               {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
-              onClick={async ()=>{
+              onClick={async () => {
                 await onReject(rejectReason);
                 setRejectOpen(false);
                 setRejectReason("");

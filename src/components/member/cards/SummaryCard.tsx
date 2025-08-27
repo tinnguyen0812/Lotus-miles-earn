@@ -10,7 +10,7 @@ import { callApi } from "@/lib/api-client";
 export type MemberInfo = {
   name: string;
   email: string;
-  membershipTier: "Platinum" | "Gold" | "Silver" | "Bronze" | string;
+  membershipTier: "platinum" | "gold" | "silver" | "bronze" |"member"| string;
   totalMiles: number;
   milesThisYear: number;
   nextTierMiles: number; // threshold (min_points) of next tier; 0 if max tier
@@ -51,17 +51,21 @@ export function MemberDashboard({ memberInfo }: { memberInfo: MemberInfo }) {
   );
 
   const getTierColor = (tier: string) => {
-    switch (tier.toLowerCase()) {
-      case "platinum":
-        return "bg-gray-800 text-white";
-      case "gold":
-        return "bg-yellow-500 text-white";
-      case "silver":
-        return "bg-gray-400 text-white";
-      default:
-        return "bg-teal-600 text-white";
-    }
-  };
+  switch (tier.toLowerCase()) {
+    case "platinum":
+      return "bg-gray-800 text-white";
+    case "gold":
+      return "bg-yellow-500 text-white";
+    case "silver":
+      return "bg-gray-400 text-white";
+    case "bronze":
+      return "bg-orange-600 text-white";
+    case "member":  // <-- thêm cái này
+      return "bg-teal-600 text-white";
+    default:
+      return "bg-gray-300 text-black";
+  }
+};
 
   // ====== Upgrade progress ======
   const hasNext = memberInfo.nextTierMiles > 0;

@@ -34,7 +34,7 @@ export default function AdminHeader({ title, children }: Props) {
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <Button asChild variant="outline" size="sm" className="border-red-300 text-red-600 hover:bg-red-50">
-            <Link href="/logout"><LogOut className="h-4 w-4 mr-2" />{t("admin.nav.logout")}</Link>
+            <Link href="/admin/login"><LogOut className="h-4 w-4 mr-2" />{t("admin.nav.logout")}</Link>
           </Button>
         </div>
       </div>

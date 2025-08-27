@@ -205,14 +205,6 @@ export default function AdminRequestsDashboard({
 
         {/* Toolbar */}
         <div className="mb-4 rounded-lg border bg-white p-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg">{t("admin.claims.queue_title")}</h2>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Download className="mr-2 h-4 w-4" />
-              {t("admin.claims.buttons.export")}
-            </Button>
-          </div>
-
           <div className="flex items-center gap-4">
             <div className="relative max-w-md flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -223,11 +215,6 @@ export default function AdminRequestsDashboard({
                 className="pl-10"
               />
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <Filter size={16} />
-              {/* có thể i18n riêng cho Filter nếu muốn */}
-              {t("common.filter") || "Filter"}
-            </Button>
           </div>
         </div>
 

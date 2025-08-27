@@ -20,7 +20,8 @@
     "page": "Page",
     "loading": "Loading",
     "filter": "Filter",
-    "back": "Back"
+    "back": "Back",
+    "no_data": "Empty data"
   },
   "header": {
     "title": "Welcome, Member"
@@ -67,7 +68,7 @@
       "platinum": "Platinum",
       "gold": "Gold",
       "silver": "Silver",
-      "basic": "Member",
+      "member": "Member",
       "bronze": "Bronze"
     },
     "dashboard": {
@@ -114,7 +115,7 @@
         "description": "Please describe your transaction in detail..."
       },
       "types": {
-        "missing_flight": "Missing flight miles",
+        "missing_flight": "Earn miles for flight",
         "partner_purchase": "Partner purchase",
         "credit_card": "Credit card payment",
         "hotel_stay": "Hotel stay",
@@ -336,7 +337,7 @@
       "title": "Manual mileage claims management",
       "subtitle": "Review and approve manual mileage claims from members",
       "status": {
-        "pending": "Pending",
+        "processing": "Processing",
         "approved": "Approved",
         "rejected": "Rejected",
         "total_miles": "Total miles"
