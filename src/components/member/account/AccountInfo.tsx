@@ -51,9 +51,11 @@ const same = (a: any, b: any) => String(a ?? "") === String(b ?? "");
 export function AccountInfo({
   memberInfo,
   benefits = [],
+  onProfileUpdated
 }: {
   memberInfo: MemberInfo;
   benefits?: BenefitLine[];
+  onProfileUpdated?: () => Promise<void>;
 }) {
   const { t, locale } = useTranslation();
   const { toast } = useToast();
@@ -99,7 +101,7 @@ export function AccountInfo({
 
         const pv = data.find(p => p.name.toLowerCase() === (memberInfo.city || "").toLowerCase());
         if (pv) setProvinceCode(pv.code);
-      } catch {}
+      } catch { }
     })();
     return () => { cancel = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,7 +128,7 @@ export function AccountInfo({
           ((memberInfo.district || memberInfo.state || "").toLowerCase())
         );
         if (dMatch) setDistrictCode(dMatch.code);
-      } catch {}
+      } catch { }
     })();
     return () => { cancel = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,9 +147,10 @@ export function AccountInfo({
         }));
         if (cancel) return;
         setWards(ws);
-        const wMatch = ws.find(w => w.name.toLowerCase() === (memberInfo.ward || "").toLowerCase());
+        const normalize = (s: string) => s.trim().toLowerCase();
+        const wMatch = ws.find(w => normalize(w.name) === normalize(memberInfo.ward || ""));
         if (wMatch) setWardCode(wMatch.code);
-      } catch {}
+      } catch { }
     })();
     return () => { cancel = true; };
   }, [districtCode, isVN, memberInfo.ward]);
@@ -183,9 +186,9 @@ export function AccountInfo({
   const composedAddress = useMemo(() => {
     const ward = isVN ? (selectedWard?.name || memberInfo.ward || wardText) : (wardText || memberInfo.ward);
     const district = isVN ? (selectedDistrict?.name || memberInfo.district || memberInfo.state || districtText)
-                          : (districtText || memberInfo.district || memberInfo.state);
+      : (districtText || memberInfo.district || memberInfo.state);
     const city = isVN ? (selectedProvince?.name || memberInfo.city || cityText)
-                      : (cityText || memberInfo.city);
+      : (cityText || memberInfo.city);
     const parts = [
       street || memberInfo.address,
       ward, district, city,
@@ -201,9 +204,9 @@ export function AccountInfo({
     const { first_name, last_name } = splitName(name);
     const cityName = isVN ? (selectedProvince?.name || memberInfo.city || "") : (cityText || memberInfo.city || "");
     const districtName = isVN ? (selectedDistrict?.name || memberInfo.district || memberInfo.state || "")
-                              : (districtText || memberInfo.district || "");
+      : (districtText || memberInfo.district || "");
     const wardName = isVN ? (selectedWard?.name || memberInfo.ward || "")
-                          : (wardText || memberInfo.ward || "");
+      : (wardText || memberInfo.ward || "");
     const stateName = isVN ? (memberInfo.state || stateText || "") : (stateText || memberInfo.state || "");
 
     const payload: any = {};
@@ -239,9 +242,12 @@ export function AccountInfo({
           "x-user-id": userId,
         },
       });
-
+      if (onProfileUpdated) {
+        await onProfileUpdated();
+      }
       setIsEditing(false);
       toast({ title: t("common.saved") || "Saved" });
+
     } catch (e: any) {
       toast({
         title: t("common.error") || "Error",
@@ -310,7 +316,7 @@ export function AccountInfo({
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {benefits.map((line, idx) => (
                   <div key={idx} className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-teal-600" />
+                    <Shield className="h-4 w-4 text-teal-600 flex-shrink-0" />
                     <span className="text-sm text-foreground">{line}</span>
                   </div>
                 ))}
@@ -420,7 +426,7 @@ export function AccountInfo({
               ) : (
                 <div className="flex items-center gap-2 rounded-md bg-gray-50 p-3">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{ memberInfo.address|| "-"}</span>
+                  <span>{memberInfo.address || "-"}</span>
                 </div>
               )}
             </div>

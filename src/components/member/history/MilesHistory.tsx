@@ -350,8 +350,8 @@ export function MilesHistory() {
       </Card>
 
       {/* Summary cards: tính từ toàn bộ dữ liệu */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-teal-200">
+      <div className="flex flex-col md:flex-row justify-center gap-4">
+        <Card className="border-teal-200 w-full md:w-1/3">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-teal-700">
               {summaryLoading ? <Loader2 className="h-5 w-5 inline animate-spin" /> : summary.thisMonthTotal.toLocaleString()}
@@ -359,20 +359,12 @@ export function MilesHistory() {
             <p className="text-sm text-muted-foreground">{t("member.history.summary.this_month")}</p>
           </CardContent>
         </Card>
-        <Card className="border-teal-200">
+        <Card className="border-teal-200 w-full md:w-1/3">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-teal-700">
               {summaryLoading ? <Loader2 className="h-5 w-5 inline animate-spin" /> : summary.completed}
             </div>
             <p className="text-sm text-muted-foreground">{t("member.history.summary.completed")}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-teal-200">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">
-              {summaryLoading ? <Loader2 className="h-5 w-5 inline animate-spin" /> : summary.pending}
-            </div>
-            <p className="text-sm text-muted-foreground">{t("member.history.summary.pending")}</p>
           </CardContent>
         </Card>
       </div>

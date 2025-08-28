@@ -100,69 +100,77 @@ const MOCK: MemberInfo = {
 };
 
 export default withMemberGuard(function AccountInfoPage() {
-  const { locale } = useTranslation();        // <-- DÙNG LOCALE TRONG APP
+  const { locale } = useTranslation();        
   const [member, setMember] = useState<MemberInfo | null>(null);
   const [benefits, setBenefits] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token") || "";
-    const userId = localStorage.getItem("user_id") || localStorage.getItem("userId") || "";
+  const token = localStorage.getItem("token") || "";
+  const userId =
+    localStorage.getItem("user_id") || localStorage.getItem("userId") || "";
 
+  // ⬇️ Tách logic fetch profile ra thành 1 hàm
+  const refreshProfile = async () => {
+    const [profile, tiers] = await Promise.all([
+      callApi<ProfileResp>({
+        method: "GET",
+        path: "/ms-users/member/profile",
+        headers: { Authorization: `Bearer ${token}`, "x-user-id": userId },
+      }),
+      callApi<TiersResp>({
+        method: "GET",
+        path: "/ms-reward/tiers",
+        headers: { Authorization: `Bearer ${token}`, "x-user-id": userId },
+      }),
+    ]);
+
+    const p = profile?.data;
+    const tiersArr = tiers?.data ?? [];
+    if (!p) throw new Error("profile failed");
+
+    const total = p.points?.total_points ?? 0;
+    const available = p.points?.available_points ?? 0;
+
+    const tierObj = findCurrentTier(tiersArr, total);
+    const currentTierName = tierObj?.tier_name || p.tier?.tier_name || "bronze";
+    const nextTier = findNextTier(tiersArr, total);
+    const distance = nextTier ? Math.max(0, nextTier.min_points - total) : 0;
+
+    const fromProfile = benefitsByLocale(p.tier?.benefit, locale);
+    const fromTable = benefitsByLocale(tierObj?.benefit, locale);
+    const finalBenefits = fromProfile.length ? fromProfile : fromTable;
+
+    const fullName =
+      [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+      p.user_email?.split("@")[0] ||
+      "Member";
+
+    const mapped: MemberInfo = {
+      name: fullName,
+      email: p.user_email,
+      membershipTier: normalizeTierName(currentTierName),
+      totalMiles: total,
+      milesThisYear: available,
+      nextTierMiles: distance,
+      phoneNumber: p.phone_numbers || "",
+      dob: (p.dob || "").slice(0, 10),
+      address: p.address || "",
+      city: p.city || "",
+      state: p.state || "",
+      zip: p.zip || "",
+      country: p.country || "",
+      district: p.district || "",
+      ward: p.ward || "",
+    };
+
+    setMember(mapped);
+    setBenefits(finalBenefits);
+  };
+
+  useEffect(() => {
     (async () => {
       try {
-        const [profile, tiers] = await Promise.all([
-          callApi<ProfileResp>({
-            method: "GET",
-            path: "/ms-users/member/profile",
-            headers: { Authorization: `Bearer ${token}`, "x-user-id": userId },
-          }),
-          callApi<TiersResp>({ method: "GET", path: "/ms-reward/tiers", headers: { Authorization: `Bearer ${token}`, "x-user-id": userId }, }),
-        ]);
-
-        const p = profile?.data;
-        const tiersArr = tiers?.data ?? [];
-        if (!p) throw new Error("profile failed");
-
-        const total = p.points?.total_points ?? 0;
-        const available = p.points?.available_points ?? 0;
-
-        const tierObj = findCurrentTier(tiersArr, total);
-        const currentTierName = tierObj?.tier_name || p.tier?.tier_name || "bronze";
-        const nextTier = findNextTier(tiersArr, total);
-        const distance = nextTier ? Math.max(0, nextTier.min_points - total) : 0;
-
-        // >>> CHỌN BENEFITS THEO LOCALE TỪ CONTEXT
-        const fromProfile = benefitsByLocale(p.tier?.benefit, locale);
-        const fromTable = benefitsByLocale(tierObj?.benefit, locale);
-        const finalBenefits = fromProfile.length ? fromProfile : fromTable;
-
-        const fullName =
-          [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-          p.user_email?.split("@")[0] ||
-          "Member";
-
-        const mapped: MemberInfo = {
-          name: fullName,
-          email: p.user_email,
-          membershipTier: normalizeTierName(currentTierName),
-          totalMiles: total,
-          milesThisYear: available,
-          nextTierMiles: distance,
-
-          phoneNumber: p.phone_numbers || "",
-          dob: (p.dob || "").slice(0, 10),
-          address: p.address || "",
-          city: p.city || "",
-          state: p.state || "",
-          zip: p.zip || "",
-          country: p.country || "",
-          district: p.district || "",     // NEW
-          ward: p.ward || "",   
-        };
-
-        setMember(mapped);
-        setBenefits(finalBenefits);
+        await refreshProfile();
       } catch {
         setMember(MOCK);
         setBenefits([]);
@@ -170,7 +178,7 @@ export default withMemberGuard(function AccountInfoPage() {
         setLoading(false);
       }
     })();
-  }, [locale]);  // đổi ngôn ngữ => refetch benefits theo locale
+  }, [locale]);
 
   if (loading || !member) {
     return (
@@ -181,5 +189,13 @@ export default withMemberGuard(function AccountInfoPage() {
     );
   }
 
-  return <AccountInfo memberInfo={member} benefits={benefits} />;
+  // ⬇️ Truyền hàm refresh xuống child
+  return (
+    <AccountInfo
+      memberInfo={member}
+      benefits={benefits}
+      onProfileUpdated={refreshProfile}
+    />
+  );
 });
+

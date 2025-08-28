@@ -23,7 +23,8 @@
     "page": "Trang",
     "loading": "Đang tải",
     "filter": "Lọc",
-    "back": "Trở lại"
+    "back": "Trở lại",
+     "submitting": "Đang gửi..."
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
@@ -85,7 +86,8 @@
         "manual_claim": "Yêu cầu tích dặm thủ công",
         "processing": "Đang xử lý",
         "miles_plus": "+{{count}} dặm"
-      }
+      },
+      "max_tier": "Đã ở hạng cao nhất"
     },
     "claim": {
       "title": "Gửi yêu cầu tích dặm thủ công",
