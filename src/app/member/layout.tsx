@@ -1,19 +1,11 @@
-// src/components/member/layout/MemberLayout.tsx
-"use client";
+// app/member/layout.tsx
+import type { Metadata } from "next";
+import MemberLayoutClient from "@/components/member/layout/MemberLayout";
 
-import { MemberHeader } from "@/components/member/layout/MemberHeader";
+export const metadata = {
+  title: "Lotus Loyalty Center", // chỉ cần default string
+}
 
-export default function MemberLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <MemberHeader />
-      <main className="mx-auto w-full max-w-screen-xl px-3 sm:px-4 lg:px-6">
-        {children}
-      </main>
-    </div>
-  );
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <MemberLayoutClient>{children}</MemberLayoutClient>;
 }
