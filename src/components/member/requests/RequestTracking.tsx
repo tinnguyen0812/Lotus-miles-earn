@@ -16,6 +16,7 @@ import {
   XCircle,
   Loader2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type RequestStatus = "pending" | "processing" | "processed" | "rejected";
 
@@ -95,7 +96,7 @@ export function RequestTracking() {
         return <XCircle className="h-4 w-4 text-red-500" />;
     }
   };
-
+  const router = useRouter();
   const statusBadge = (s: RequestStatus) => {
     const map: Record<RequestStatus, string> = {
       pending: "member.requests.status.pending",
@@ -110,8 +111,8 @@ export function RequestTracking() {
       rejected: "bg-red-100 text-red-800",
     };
     return <Badge className={cls[s]}>{t(map[s])}</Badge>;
-  };
 
+  };
   const typeLabel = (type: MilesRequest["type"]) => t(`member.requests.type.${type}`);
 
   // ----- fetch list -----
@@ -331,7 +332,10 @@ export function RequestTracking() {
               <p className="mb-4 text-muted-foreground">
                 {t("member.requests.empty.subtitle")}
               </p>
-              <Button className="bg-teal-600 hover:bg-teal-700">
+              <Button
+                className="bg-teal-600 hover:bg-teal-700"
+                onClick={() => router.push("/member/claim-miles")} // 👈 chuyển trang
+              >
                 {t("member.requests.create_first")}
               </Button>
             </CardContent>

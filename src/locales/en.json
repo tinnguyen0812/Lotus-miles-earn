@@ -21,7 +21,8 @@
     "loading": "Loading",
     "filter": "Filter",
     "back": "Back",
-    "no_data": "Empty data"
+    "no_data": "Empty data",
+    "submitting": "Submitting..."
   },
   "header": {
     "title": "Welcome, Member"
@@ -86,7 +87,8 @@
         "manual_claim": "Manual mileage claim",
         "processing": "Processing",
         "miles_plus": "+{{count}} miles"
-      }
+      },
+      "max_tier": "Recent tier is highest"
     },
     "claim": {
       "title": "Submit manual miles request",
